@@ -1,0 +1,762 @@
+{
+  "dataset_dir": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset",
+  "label_count": 36,
+  "sample_count": 908,
+  "stale_meta_records": [
+    {
+      "label": "7C",
+      "warped_path": "warped/7C/20260403_010241_7C_warped.jpg",
+      "raw_path": "raw/20260403_010241_7C_raw.jpg",
+      "timestamp": "20260403_010241"
+    }
+  ],
+  "nearest_card_confusions": [
+    [
+      "AS",
+      "AC",
+      19
+    ],
+    [
+      "QH",
+      "QD",
+      18
+    ],
+    [
+      "QD",
+      "QH",
+      17
+    ],
+    [
+      "JH",
+      "JC",
+      16
+    ],
+    [
+      "AH",
+      "AD",
+      15
+    ],
+    [
+      "JD",
+      "JH",
+      14
+    ],
+    [
+      "6S",
+      "7S",
+      13
+    ],
+    [
+      "8H",
+      "6H",
+      13
+    ],
+    [
+      "QC",
+      "QH",
+      13
+    ],
+    [
+      "10C",
+      "9C",
+      12
+    ],
+    [
+      "AC",
+      "AD",
+      12
+    ],
+    [
+      "AD",
+      "AH",
+      12
+    ]
+  ],
+  "nearest_rank_confusions": [
+    [
+      "A",
+      "8",
+      101
+    ],
+    [
+      "Q",
+      "J",
+      62
+    ],
+    [
+      "J",
+      "Q",
+      59
+    ],
+    [
+      "6",
+      "7",
+      49
+    ],
+    [
+      "8",
+      "7",
+      44
+    ],
+    [
+      "7",
+      "6",
+      43
+    ],
+    [
+      "K",
+      "J",
+      43
+    ],
+    [
+      "9",
+      "10",
+      41
+    ],
+    [
+      "10",
+      "K",
+      39
+    ],
+    [
+      "J",
+      "K",
+      38
+    ],
+    [
+      "K",
+      "Q",
+      34
+    ],
+    [
+      "Q",
+      "K",
+      32
+    ]
+  ],
+  "nearest_suit_confusions": [
+    [
+      "S",
+      "C",
+      134
+    ],
+    [
+      "C",
+      "S",
+      122
+    ],
+    [
+      "D",
+      "H",
+      101
+    ],
+    [
+      "H",
+      "D",
+      97
+    ],
+    [
+      "D",
+      "S",
+      90
+    ],
+    [
+      "S",
+      "D",
+      80
+    ],
+    [
+      "H",
+      "C",
+      68
+    ],
+    [
+      "H",
+      "S",
+      60
+    ],
+    [
+      "C",
+      "H",
+      59
+    ],
+    [
+      "C",
+      "D",
+      44
+    ],
+    [
+      "D",
+      "C",
+      34
+    ],
+    [
+      "S",
+      "H",
+      19
+    ]
+  ],
+  "focus_labels": {
+    "AS": [
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AS\\20260403_174534_AS_warped.jpg",
+        "outlier_score": 0.065406,
+        "nearest_card_label": "AH",
+        "card_margin": -0.02031,
+        "nearest_rank": "8",
+        "rank_margin": 0.058465,
+        "nearest_suit": "D",
+        "suit_margin": -0.029504
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AS\\20260403_174544_AS_warped.jpg",
+        "outlier_score": 0.070587,
+        "nearest_card_label": "AH",
+        "card_margin": -0.018576,
+        "nearest_rank": "8",
+        "rank_margin": 0.056627,
+        "nearest_suit": "D",
+        "suit_margin": -0.025744
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AS\\20260403_174608_AS_warped.jpg",
+        "outlier_score": 0.074382,
+        "nearest_card_label": "AH",
+        "card_margin": -0.01843,
+        "nearest_rank": "8",
+        "rank_margin": 0.050305,
+        "nearest_suit": "D",
+        "suit_margin": -0.024271
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AS\\20260403_182906_AS_warped.jpg",
+        "outlier_score": 0.057414,
+        "nearest_card_label": "AH",
+        "card_margin": -0.0183,
+        "nearest_rank": "8",
+        "rank_margin": 0.060518,
+        "nearest_suit": "D",
+        "suit_margin": -0.029974
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AS\\20260403_015137_AS_warped.jpg",
+        "outlier_score": 0.067693,
+        "nearest_card_label": "AH",
+        "card_margin": -0.017509,
+        "nearest_rank": "8",
+        "rank_margin": 0.059613,
+        "nearest_suit": "D",
+        "suit_margin": -0.02567
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AS\\20260407_000252_AS_warped.jpg",
+        "outlier_score": 0.099637,
+        "nearest_card_label": "8D",
+        "card_margin": -0.017472,
+        "nearest_rank": "8",
+        "rank_margin": 0.008295,
+        "nearest_suit": "D",
+        "suit_margin": -0.010758
+      }
+    ],
+    "AH": [
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AH\\20260407_002312_AH_warped.jpg",
+        "outlier_score": 0.051231,
+        "nearest_card_label": "AC",
+        "card_margin": -0.014117,
+        "nearest_rank": "8",
+        "rank_margin": 0.070665,
+        "nearest_suit": "D",
+        "suit_margin": -0.008769
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AH\\20260407_002317_AH_warped.jpg",
+        "outlier_score": 0.052579,
+        "nearest_card_label": "AC",
+        "card_margin": -0.009611,
+        "nearest_rank": "8",
+        "rank_margin": 0.052551,
+        "nearest_suit": "D",
+        "suit_margin": -0.00431
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AH\\20260407_002306_AH_warped.jpg",
+        "outlier_score": 0.031303,
+        "nearest_card_label": "AD",
+        "card_margin": -0.007678,
+        "nearest_rank": "8",
+        "rank_margin": 0.073374,
+        "nearest_suit": "D",
+        "suit_margin": -0.006721
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AH\\20260407_002310_AH_warped.jpg",
+        "outlier_score": 0.048305,
+        "nearest_card_label": "AC",
+        "card_margin": -0.007276,
+        "nearest_rank": "8",
+        "rank_margin": 0.058483,
+        "nearest_suit": "D",
+        "suit_margin": -0.005005
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AH\\20260403_183004_AH_warped.jpg",
+        "outlier_score": 0.033187,
+        "nearest_card_label": "AD",
+        "card_margin": -0.003983,
+        "nearest_rank": "8",
+        "rank_margin": 0.072146,
+        "nearest_suit": "D",
+        "suit_margin": -0.004314
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AH\\20260407_002315_AH_warped.jpg",
+        "outlier_score": 0.040121,
+        "nearest_card_label": "AC",
+        "card_margin": 0.002832,
+        "nearest_rank": "8",
+        "rank_margin": 0.061545,
+        "nearest_suit": "D",
+        "suit_margin": -0.006854
+      }
+    ],
+    "AC": [
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AC\\20260403_185250_AC_warped.jpg",
+        "outlier_score": 0.084171,
+        "nearest_card_label": "AS",
+        "card_margin": -0.005075,
+        "nearest_rank": "8",
+        "rank_margin": 0.044762,
+        "nearest_suit": "S",
+        "suit_margin": -0.005032
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AC\\20260403_181004_AC_warped.jpg",
+        "outlier_score": 0.055366,
+        "nearest_card_label": "AH",
+        "card_margin": -0.004482,
+        "nearest_rank": "8",
+        "rank_margin": 0.061448,
+        "nearest_suit": "D",
+        "suit_margin": -0.016752
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AC\\20260403_180929_AC_warped.jpg",
+        "outlier_score": 0.037413,
+        "nearest_card_label": "AD",
+        "card_margin": -0.004409,
+        "nearest_rank": "8",
+        "rank_margin": 0.055746,
+        "nearest_suit": "D",
+        "suit_margin": -0.015636
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AC\\20260403_181011_AC_warped.jpg",
+        "outlier_score": 0.052959,
+        "nearest_card_label": "AH",
+        "card_margin": -0.002989,
+        "nearest_rank": "8",
+        "rank_margin": 0.067977,
+        "nearest_suit": "D",
+        "suit_margin": -0.016139
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AC\\20260403_185316_AC_warped.jpg",
+        "outlier_score": 0.059712,
+        "nearest_card_label": "AS",
+        "card_margin": -0.000972,
+        "nearest_rank": "8",
+        "rank_margin": 0.050839,
+        "nearest_suit": "D",
+        "suit_margin": -0.00865
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AC\\20260403_185323_AC_warped.jpg",
+        "outlier_score": 0.045399,
+        "nearest_card_label": "AH",
+        "card_margin": -0.000398,
+        "nearest_rank": "8",
+        "rank_margin": 0.044212,
+        "nearest_suit": "D",
+        "suit_margin": -0.017151
+      }
+    ],
+    "AD": [
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AD\\20260407_002927_AD_warped.jpg",
+        "outlier_score": 0.048599,
+        "nearest_card_label": "AC",
+        "card_margin": -0.007623,
+        "nearest_rank": "8",
+        "rank_margin": 0.063037,
+        "nearest_suit": "H",
+        "suit_margin": 0.003821
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AD\\20260407_002924_AD_warped.jpg",
+        "outlier_score": 0.037756,
+        "nearest_card_label": "AC",
+        "card_margin": -0.003397,
+        "nearest_rank": "8",
+        "rank_margin": 0.051793,
+        "nearest_suit": "H",
+        "suit_margin": 0.005257
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AD\\20260407_002930_AD_warped.jpg",
+        "outlier_score": 0.044151,
+        "nearest_card_label": "AC",
+        "card_margin": -0.000123,
+        "nearest_rank": "8",
+        "rank_margin": 0.063525,
+        "nearest_suit": "H",
+        "suit_margin": 0.010259
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AD\\20260403_184839_AD_warped.jpg",
+        "outlier_score": 0.04684,
+        "nearest_card_label": "AH",
+        "card_margin": -2.3e-05,
+        "nearest_rank": "8",
+        "rank_margin": 0.062876,
+        "nearest_suit": "H",
+        "suit_margin": 0.005942
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AD\\20260403_184803_AD_warped.jpg",
+        "outlier_score": 0.037657,
+        "nearest_card_label": "AC",
+        "card_margin": 0.000264,
+        "nearest_rank": "8",
+        "rank_margin": 0.054837,
+        "nearest_suit": "H",
+        "suit_margin": 0.005883
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\AD\\20260403_180407_AD_warped.jpg",
+        "outlier_score": 0.034293,
+        "nearest_card_label": "AH",
+        "card_margin": 0.000374,
+        "nearest_rank": "8",
+        "rank_margin": 0.057028,
+        "nearest_suit": "H",
+        "suit_margin": 0.006085
+      }
+    ],
+    "8": [],
+    "7": [],
+    "10H": [
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\10H\\20260407_001319_10H_warped.jpg",
+        "outlier_score": 0.081576,
+        "nearest_card_label": "QD",
+        "card_margin": -0.018752,
+        "nearest_rank": "Q",
+        "rank_margin": -0.023558,
+        "nearest_suit": "C",
+        "suit_margin": 0.00957
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\10H\\20260407_001335_10H_warped.jpg",
+        "outlier_score": 0.080474,
+        "nearest_card_label": "QD",
+        "card_margin": -0.016008,
+        "nearest_rank": "Q",
+        "rank_margin": -0.023218,
+        "nearest_suit": "C",
+        "suit_margin": 0.007296
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\10H\\20260403_004628_10H_warped.jpg",
+        "outlier_score": 0.081284,
+        "nearest_card_label": "6H",
+        "card_margin": -0.015021,
+        "nearest_rank": "7",
+        "rank_margin": -0.003017,
+        "nearest_suit": "C",
+        "suit_margin": 0.006551
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\10H\\20260403_184734_10H_warped.jpg",
+        "outlier_score": 0.080417,
+        "nearest_card_label": "6H",
+        "card_margin": -0.014163,
+        "nearest_rank": "9",
+        "rank_margin": -0.001274,
+        "nearest_suit": "C",
+        "suit_margin": 0.00645
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\10H\\20260407_001331_10H_warped.jpg",
+        "outlier_score": 0.107684,
+        "nearest_card_label": "8D",
+        "card_margin": -0.013887,
+        "nearest_rank": "A",
+        "rank_margin": -0.014497,
+        "nearest_suit": "D",
+        "suit_margin": -0.005354
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\10H\\20260403_180318_10H_warped.jpg",
+        "outlier_score": 0.080644,
+        "nearest_card_label": "KC",
+        "card_margin": -0.009734,
+        "nearest_rank": "K",
+        "rank_margin": -0.005455,
+        "nearest_suit": "S",
+        "suit_margin": -0.020551
+      }
+    ],
+    "10": [],
+    "7C": [
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\7C\\20260407_002652_7C_warped.jpg",
+        "outlier_score": 0.124741,
+        "nearest_card_label": "AS",
+        "card_margin": -0.03367,
+        "nearest_rank": "A",
+        "rank_margin": -0.020475,
+        "nearest_suit": "D",
+        "suit_margin": -0.012667
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\7C\\20260403_185225_7C_warped.jpg",
+        "outlier_score": 0.079786,
+        "nearest_card_label": "6S",
+        "card_margin": -0.011886,
+        "nearest_rank": "10",
+        "rank_margin": -0.008715,
+        "nearest_suit": "S",
+        "suit_margin": -0.008082
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\7C\\20260403_185203_7C_warped.jpg",
+        "outlier_score": 0.076843,
+        "nearest_card_label": "6S",
+        "card_margin": -0.011459,
+        "nearest_rank": "J",
+        "rank_margin": -0.011666,
+        "nearest_suit": "S",
+        "suit_margin": -0.008974
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\7C\\20260407_002623_7C_warped.jpg",
+        "outlier_score": 0.0826,
+        "nearest_card_label": "6C",
+        "card_margin": -0.006499,
+        "nearest_rank": "10",
+        "rank_margin": -0.001353,
+        "nearest_suit": "D",
+        "suit_margin": -0.0035
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\7C\\20260403_185218_7C_warped.jpg",
+        "outlier_score": 0.090239,
+        "nearest_card_label": "7H",
+        "card_margin": -0.004225,
+        "nearest_rank": "K",
+        "rank_margin": -0.010659,
+        "nearest_suit": "D",
+        "suit_margin": -0.009293
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\7C\\20260403_005948_7C_warped.jpg",
+        "outlier_score": 0.059465,
+        "nearest_card_label": "7S",
+        "card_margin": -0.003929,
+        "nearest_rank": "6",
+        "rank_margin": 0.001438,
+        "nearest_suit": "S",
+        "suit_margin": 0.004685
+      }
+    ],
+    "6C": [
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6C\\20260403_190049_6C_warped.jpg",
+        "outlier_score": 0.06835,
+        "nearest_card_label": "7C",
+        "card_margin": -0.010084,
+        "nearest_rank": "7",
+        "rank_margin": -0.000329,
+        "nearest_suit": "H",
+        "suit_margin": 0.007329
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6C\\20260403_190028_6C_warped.jpg",
+        "outlier_score": 0.065143,
+        "nearest_card_label": "7C",
+        "card_margin": -0.005928,
+        "nearest_rank": "7",
+        "rank_margin": -0.003141,
+        "nearest_suit": "H",
+        "suit_margin": 0.012834
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6C\\20260403_181925_6C_warped.jpg",
+        "outlier_score": 0.066365,
+        "nearest_card_label": "7C",
+        "card_margin": -0.005578,
+        "nearest_rank": "7",
+        "rank_margin": -0.002568,
+        "nearest_suit": "H",
+        "suit_margin": 0.011981
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6C\\20260403_005808_6C_warped.jpg",
+        "outlier_score": 0.062904,
+        "nearest_card_label": "7S",
+        "card_margin": -0.004688,
+        "nearest_rank": "7",
+        "rank_margin": -0.001391,
+        "nearest_suit": "D",
+        "suit_margin": 0.005406
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6C\\20260407_001027_6C_warped.jpg",
+        "outlier_score": 0.059116,
+        "nearest_card_label": "7C",
+        "card_margin": -0.004291,
+        "nearest_rank": "7",
+        "rank_margin": -0.002986,
+        "nearest_suit": "S",
+        "suit_margin": 0.009094
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6C\\20260403_015453_6C_warped.jpg",
+        "outlier_score": 0.059767,
+        "nearest_card_label": "7S",
+        "card_margin": -0.004221,
+        "nearest_rank": "7",
+        "rank_margin": -0.000632,
+        "nearest_suit": "D",
+        "suit_margin": 0.005909
+      }
+    ],
+    "8C": [
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\8C\\20260407_002557_8C_warped.jpg",
+        "outlier_score": 0.092165,
+        "nearest_card_label": "8D",
+        "card_margin": -0.012081,
+        "nearest_rank": "K",
+        "rank_margin": -0.018349,
+        "nearest_suit": "D",
+        "suit_margin": -0.010645
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\8C\\20260403_185952_8C_warped.jpg",
+        "outlier_score": 0.069454,
+        "nearest_card_label": "6S",
+        "card_margin": -0.004477,
+        "nearest_rank": "K",
+        "rank_margin": -0.005361,
+        "nearest_suit": "S",
+        "suit_margin": -0.005965
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\8C\\20260403_185945_8C_warped.jpg",
+        "outlier_score": 0.071718,
+        "nearest_card_label": "6S",
+        "card_margin": -0.004242,
+        "nearest_rank": "10",
+        "rank_margin": -0.003725,
+        "nearest_suit": "S",
+        "suit_margin": -0.008196
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\8C\\20260407_002608_8C_warped.jpg",
+        "outlier_score": 0.052043,
+        "nearest_card_label": "7S",
+        "card_margin": -0.002844,
+        "nearest_rank": "7",
+        "rank_margin": -0.004446,
+        "nearest_suit": "S",
+        "suit_margin": 0.005669
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\8C\\20260407_002606_8C_warped.jpg",
+        "outlier_score": 0.061811,
+        "nearest_card_label": "9C",
+        "card_margin": -0.001055,
+        "nearest_rank": "Q",
+        "rank_margin": -0.010147,
+        "nearest_suit": "H",
+        "suit_margin": 0.013574
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\8C\\20260407_002602_8C_warped.jpg",
+        "outlier_score": 0.060969,
+        "nearest_card_label": "9C",
+        "card_margin": -0.001049,
+        "nearest_rank": "Q",
+        "rank_margin": -0.008872,
+        "nearest_suit": "H",
+        "suit_margin": 0.011793
+      }
+    ],
+    "6H": [
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6H\\20260403_002545_6H_warped.jpg",
+        "outlier_score": 0.123203,
+        "nearest_card_label": "KC",
+        "card_margin": -0.033632,
+        "nearest_rank": "K",
+        "rank_margin": -0.017572,
+        "nearest_suit": "D",
+        "suit_margin": -0.011375
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6H\\20260407_002400_6H_warped.jpg",
+        "outlier_score": 0.109599,
+        "nearest_card_label": "10H",
+        "card_margin": -0.030153,
+        "nearest_rank": "8",
+        "rank_margin": 0.000949,
+        "nearest_suit": "S",
+        "suit_margin": -0.007839
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6H\\20260403_175211_6H_warped.jpg",
+        "outlier_score": 0.11307,
+        "nearest_card_label": "8H",
+        "card_margin": -0.0256,
+        "nearest_rank": "K",
+        "rank_margin": -0.013405,
+        "nearest_suit": "D",
+        "suit_margin": -0.01104
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6H\\20260403_183443_6H_warped.jpg",
+        "outlier_score": 0.092119,
+        "nearest_card_label": "7H",
+        "card_margin": -0.01656,
+        "nearest_rank": "K",
+        "rank_margin": -0.008363,
+        "nearest_suit": "D",
+        "suit_margin": -0.009198
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6H\\20260407_002354_6H_warped.jpg",
+        "outlier_score": 0.083817,
+        "nearest_card_label": "8D",
+        "card_margin": -0.014697,
+        "nearest_rank": "8",
+        "rank_margin": -0.006029,
+        "nearest_suit": "D",
+        "suit_margin": -0.009567
+      },
+      {
+        "path": "G:\\_PROJECTS\\_avgustine_industries\\home_fortress\\cv\\card_dataset_tool\\dataset\\warped\\6H\\20260403_175137_6H_warped.jpg",
+        "outlier_score": 0.089279,
+        "nearest_card_label": "7H",
+        "card_margin": -0.014382,
+        "nearest_rank": "K",
+        "rank_margin": -0.009169,
+        "nearest_suit": "D",
+        "suit_margin": -0.007151
+      }
+    ]
+  }
+}

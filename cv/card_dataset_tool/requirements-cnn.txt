@@ -1,0 +1,7 @@
+# Install torch separately for your platform.
+# On Raspberry Pi / Linux ARM64, do not rely on plain `pip install torch` here:
+# recent wheels can pull large CUDA-related `nvidia-*` dependencies that are not
+# appropriate for a CPU-only Pi and can stall or exhaust memory during install.
+# See README.md for the recommended Pi flow.
+opencv-python
+numpy
