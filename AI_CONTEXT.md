@@ -121,6 +121,14 @@ Live testing should focus first on the latest remaining eval mistakes:
 - `8D`
 - `8H`
 
+Live observations from July 21, 2026:
+
+- `KD` predicted as `KD` with rank confidence `1.0000`, suit confidence `1.0000`.
+- One current-card run predicted `AS` with rank confidence `1.0000`, suit confidence `0.9996`.
+- One current-card run predicted `QC` with rank confidence `0.9733`, suit confidence `0.9999`.
+- `AC` predicted as `AC` with rank confidence `1.0000`, suit confidence `0.7039`; user noted it had previously been recognized as `AS`.
+- Treat `AC` versus `AS` / clubs versus spades as an active live ambiguity to retest.
+
 Live tester:
 
 ```bash
