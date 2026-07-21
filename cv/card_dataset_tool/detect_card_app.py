@@ -15,8 +15,8 @@ if str(REPO_ROOT) not in sys.path:
 from cv.card_common.camera import CameraOptions, open_camera
 from cv.card_dataset_tool.app import find_card_quad, warp_card
 from cv.card_dataset_tool.cnn_common import load_checkpoint
-from cv.card_dataset_tool.live_patch_cnn import predict_card, resolve_device
-from cv.card_dataset_tool.patch_preprocess import SUIT_ROI, orient_card_to_corner
+from cv.card_dataset_tool.live_patch_cnn import predict_patch, resolve_device
+from cv.card_dataset_tool.patch_preprocess import SUIT_ROI, extract_roi, normalize_patch_image
 
 
 RANK_NAMES = {
@@ -121,15 +121,72 @@ def classify_red_suit_shape(oriented_warped) -> str:
     return ""
 
 
-def apply_shape_suit_correction(label: str, warped: np.ndarray) -> tuple[str, str]:
+def apply_shape_suit_correction(label: str, oriented_warped: np.ndarray) -> tuple[str, str]:
     if len(label) < 2 or label[-1] not in ("D", "H"):
         return label, ""
 
-    oriented = orient_card_to_corner(warped)
-    shape_suit = classify_red_suit_shape(oriented)
+    shape_suit = classify_red_suit_shape(oriented_warped)
     if label[-1] == "H" and shape_suit == "D":
         return f"{label[:-1]}{shape_suit}", f"shape {label[-1]}->{shape_suit}"
     return label, ""
+
+
+def suit_color_group(oriented_warped: np.ndarray) -> str:
+    x, y, width, height = SUIT_ROI
+    suit_roi = oriented_warped[y : y + height, x : x + width]
+    hsv = cv2.cvtColor(suit_roi, cv2.COLOR_BGR2HSV)
+    hue, saturation, value = cv2.split(hsv)
+    red_count = int(((((hue <= 12) | (hue >= 165)) & (saturation >= 45) & (value <= 245))).sum())
+    black_count = int((((value <= 145) & (saturation <= 135))).sum())
+    if red_count < 25 and black_count < 25:
+        return "unknown"
+    if red_count >= max(35, int(black_count * 0.35)):
+        return "red"
+    if black_count >= 35:
+        return "black"
+    return "unknown"
+
+
+def suit_color_score(label: str, color_group: str) -> float:
+    if len(label) < 2 or color_group == "unknown":
+        return 1.0
+    suit = label[-1]
+    if suit in ("D", "H"):
+        return 1.0 if color_group == "red" else 0.45
+    if suit in ("C", "S"):
+        return 1.0 if color_group == "black" else 0.45
+    return 1.0
+
+
+def predict_card_best_orientation(
+    warped: np.ndarray,
+    rank_model,
+    rank_id_to_label,
+    suit_model,
+    suit_id_to_label,
+    device,
+):
+    best = None
+    for rotation in range(4):
+        oriented = np.ascontiguousarray(np.rot90(warped, rotation))
+        rank_patch = normalize_patch_image(extract_roi(oriented, "rank"), "rank")
+        suit_patch = normalize_patch_image(extract_roi(oriented, "suit"), "suit")
+        rank, rank_confidence = predict_patch(rank_model, rank_id_to_label, rank_patch, device)
+        suit, suit_confidence = predict_patch(suit_model, suit_id_to_label, suit_patch, device)
+        label = f"{rank}{suit}"
+        score = (
+            min(rank_confidence, suit_confidence)
+            * ((rank_confidence + suit_confidence) / 2.0)
+            * suit_color_score(label, suit_color_group(oriented))
+        )
+        candidate = (score, rank_confidence, suit_confidence, label, oriented, rotation)
+        if best is None or candidate[0] > best[0]:
+            best = candidate
+
+    if best is None:
+        return "", 0.0, 0.0, warped, 0
+    _score, rank_confidence, suit_confidence, label, oriented, rotation = best
+    return label, rank_confidence, suit_confidence, oriented, rotation
 
 
 def draw_text_box(frame, lines: list[str], origin: tuple[int, int], color: tuple[int, int, int]) -> None:
@@ -200,11 +257,12 @@ def detect_frame(frame, min_area: int, rank_model, rank_id_to_label, suit_model,
     if quad is None:
         return "", 0.0, 0.0, None, contour, None, area, "no card found"
     warped = warp_card(frame, quad)
-    _rank, rank_confidence, _suit, suit_confidence, label = predict_card(
+    label, rank_confidence, suit_confidence, oriented, rotation = predict_card_best_orientation(
         warped, rank_model, rank_id_to_label, suit_model, suit_id_to_label, device
     )
-    corrected_label, correction = apply_shape_suit_correction(label, warped)
-    return corrected_label, rank_confidence, suit_confidence, quad, contour, warped, area, correction or "detected"
+    corrected_label, correction = apply_shape_suit_correction(label, oriented)
+    status = correction or f"detected rot={rotation * 90}"
+    return corrected_label, rank_confidence, suit_confidence, quad, contour, oriented, area, status
 
 
 def save_snapshot(snapshot_dir: Path, frame, label: str) -> Path:
@@ -242,7 +300,7 @@ def run_image_once(args: argparse.Namespace, rank_model, rank_id_to_label, suit_
     if not args.no_window:
         cv2.imshow("card_detection", captioned)
         if args.debug and warped is not None:
-            cv2.imshow("card_detection_warped", orient_card_to_corner(warped))
+            cv2.imshow("card_detection_warped", warped)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
     return 0 if label else 2
@@ -294,7 +352,7 @@ def main() -> int:
             )
             cv2.imshow("card_detection", preview)
             if debug_enabled and warped is not None:
-                cv2.imshow("card_detection_warped", orient_card_to_corner(warped))
+                cv2.imshow("card_detection_warped", warped)
 
             key = cv2.waitKey(1) & 0xFF
             if key == 27:
