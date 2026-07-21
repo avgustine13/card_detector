@@ -82,6 +82,8 @@ Recognize four cards in placement order:
 python cv/card_dataset_tool/identify_card_chain.py --count 4
 ```
 
+For overlapping cards, place each new card so its visible outline shifts from the previous accepted card. The chain recognizer uses contour-center and area changes to avoid treating the old visible card as the next card.
+
 Inspect weak samples and confusion clusters:
 
 ```powershell

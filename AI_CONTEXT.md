@@ -169,6 +169,13 @@ cd /home/avgustine/card_detector
 /home/avgustine/home_fortress/.venv-capture/bin/python cv/card_dataset_tool/identify_card_chain.py --count 4
 ```
 
+Overlapping-card chain behavior:
+
+- The chain recognizer does not require clearing the table.
+- It accepts a repeated predicted label only when the detected contour center or area changes enough from the last accepted card.
+- When stacking/overlapping cards, place the new top card so its visible outline shifts from the previously accepted card.
+- Chain logs include contour center coordinates to diagnose whether acceptance was blocked by insufficient movement.
+
 Controls:
 
 - type expected card label

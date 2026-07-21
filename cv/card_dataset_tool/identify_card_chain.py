@@ -9,6 +9,7 @@ import time
 from pathlib import Path
 
 import cv2
+import numpy as np
 import torch
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -33,6 +34,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--session-timeout", type=float, default=180.0, help="Maximum session length in seconds.")
     parser.add_argument("--min-area", type=int, default=12000, help="Minimum contour area for a card candidate.")
     parser.add_argument("--min-confidence", type=float, default=0.70, help="Minimum rank and suit confidence to accept.")
+    parser.add_argument(
+        "--same-card-min-shift",
+        type=float,
+        default=25.0,
+        help="Minimum contour-center movement needed to accept the same predicted card again.",
+    )
+    parser.add_argument(
+        "--same-card-area-ratio",
+        type=float,
+        default=0.08,
+        help="Minimum relative contour-area change needed to accept the same predicted card again.",
+    )
     parser.add_argument("--device", default="cpu", help="cpu, cuda, or auto.")
     parser.add_argument(
         "--rank-model",
@@ -51,6 +64,27 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--keep-attempts", action="store_true", help="Keep every attempted raw frame.")
     return parser.parse_args()
+
+
+def quad_center(quad: np.ndarray) -> tuple[float, float]:
+    center = quad.astype(np.float32).mean(axis=0)
+    return float(center[0]), float(center[1])
+
+
+def placement_changed(
+    last_center: tuple[float, float] | None,
+    last_area: float | None,
+    center: tuple[float, float],
+    area: float,
+    min_shift: float,
+    min_area_ratio: float,
+) -> bool:
+    if last_center is None or last_area is None:
+        return True
+
+    shift = float(np.hypot(center[0] - last_center[0], center[1] - last_center[1]))
+    area_delta_ratio = abs(area - last_area) / max(last_area, 1.0)
+    return shift >= min_shift or area_delta_ratio >= min_area_ratio
 
 
 def capture_still(output_path: Path, camera: int, width: int, height: int, timeout_ms: int) -> bool:
@@ -91,6 +125,8 @@ def append_log(log_path: Path, row: list[str]) -> None:
                     "rank_confidence",
                     "suit_confidence",
                     "contour_area",
+                    "center_x",
+                    "center_y",
                     "raw_path",
                     "warped_path",
                 ]
@@ -119,6 +155,8 @@ def main() -> int:
         return 1
 
     accepted: list[str] = []
+    last_accepted_center: tuple[float, float] | None = None
+    last_accepted_area: float | None = None
     candidate = ""
     candidate_count = 0
     started = time.monotonic()
@@ -154,6 +192,7 @@ def main() -> int:
             continue
 
         warped = warp_card(frame, quad)
+        center = quad_center(quad)
         _rank, rank_confidence, _suit, suit_confidence, predicted = predict_card(
             warped, rank_model, rank_id_to_label, suit_model, suit_id_to_label, device
         )
@@ -167,17 +206,24 @@ def main() -> int:
 
         print(
             f"seen={predicted} rank={rank_confidence:.3f} suit={suit_confidence:.3f} "
-            f"area={area:.0f} stable={candidate_count}/{args.stable_reads}"
+            f"area={area:.0f} center=({center[0]:.0f},{center[1]:.0f}) stable={candidate_count}/{args.stable_reads}"
         )
 
         if args.keep_attempts:
             attempts_dir.mkdir(parents=True, exist_ok=True)
             shutil.copy2(current_path, attempts_dir / f"{attempt_stamp}_{predicted}_raw.jpg")
 
-        if (
-            confidence_ok
-            and candidate_count >= args.stable_reads
-            and (not accepted or predicted != accepted[-1])
+        can_accept_same_prediction = placement_changed(
+            last_accepted_center,
+            last_accepted_area,
+            center,
+            area,
+            args.same_card_min_shift,
+            args.same_card_area_ratio,
+        )
+
+        if confidence_ok and candidate_count >= args.stable_reads and (
+            not accepted or predicted != accepted[-1] or can_accept_same_prediction
         ):
             position = len(accepted) + 1
             raw_path = session_dir / f"{position:02d}_{predicted}_raw.jpg"
@@ -193,13 +239,17 @@ def main() -> int:
                     f"{rank_confidence:.4f}",
                     f"{suit_confidence:.4f}",
                     f"{area:.1f}",
+                    f"{center[0]:.1f}",
+                    f"{center[1]:.1f}",
                     str(raw_path),
                     str(warped_path),
                 ],
             )
             accepted.append(predicted)
+            last_accepted_center = center
+            last_accepted_area = area
             print(f"ACCEPTED {position}/{args.count}: {predicted}")
-            print("Place the next card.")
+            print("Place the next card so its visible contour shifts from the previous one.")
             print()
             candidate = ""
             candidate_count = 0
