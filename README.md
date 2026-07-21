@@ -84,6 +84,12 @@ python cv/card_dataset_tool/identify_card_chain.py --count 4
 
 For overlapping cards, place each new card so its visible outline shifts from the previous accepted card. The chain recognizer uses contour-center and area changes to avoid treating the old visible card as the next card.
 
+For real gameplay-style overlapping, use frame-difference chain recognition. It captures the current pile as a baseline, waits for each newly placed card to change the image, recognizes the changed top card, then refreshes the baseline:
+
+```powershell
+python cv/card_dataset_tool/identify_card_diff_chain.py --count 4
+```
+
 Inspect weak samples and confusion clusters:
 
 ```powershell

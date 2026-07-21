@@ -176,6 +176,8 @@ Overlapping-card chain behavior:
 - When stacking/overlapping cards, place the new top card so its visible outline shifts from the previously accepted card.
 - Chain logs include contour center coordinates to diagnose whether acceptance was blocked by insufficient movement.
 
+For real gameplay-style overlapping, prefer `identify_card_diff_chain.py`. It captures the current pile as a baseline, waits for a newly placed card to change the frame, recognizes the changed top card, then refreshes the baseline before waiting for the next card.
+
 Controls:
 
 - type expected card label
