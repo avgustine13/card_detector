@@ -26,11 +26,13 @@ Multi-card and overlay work were intentionally deferred until the single-card pi
 
 - Active workstream: `cv/card_dataset_tool/`
 - Goal: offline card rank and suit recognition from warped card crops using corner patches
+- Latest dataset update: July 21, 2026 recapture for `6C`, `7C`, `8C`, `8D`, `10D`, `7H`, and `9C`
+- Dataset size after recapture: `1140` raw images, `1140` warped images, `1140` metadata records
 - Verified training environment:
   - Raspberry Pi 5
   - Python `3.11.2`
-  - venv-based install
-  - CPU-only `torch`
+  - venv-based install at `/home/avgustine/home_fortress/.venv-capture`
+  - `torch` available in that venv
 - Do not use Raspberry Pi Zero 2 W for `torch` install or CNN training
 
 ## Current Local Artifacts
@@ -52,6 +54,49 @@ From `cv/card_dataset_tool/models/metrics.json`:
 - chosen seed: `7`
 - candidate seeds: `42, 7, 13, 21`
 
+## Latest Recapture Test
+
+On July 21, 2026, the next capture checklist was executed on the Raspberry Pi checkout at
+`/home/avgustine/card_detector`.
+
+Added samples:
+
+- `6C`: `10`
+- `7C`: `10`
+- `8C`: `10`
+- `8D`: `10`
+- `10D`: `10`
+- `7H`: `5`
+- `9C`: `5`
+
+Post-capture triage:
+
+- samples: `1140`
+- labels: `36`
+- stale metadata records: `0`
+- updated `cv/card_dataset_tool/models/triage_report.json`
+- updated `cv/card_dataset_tool/models/triage_sheet.jpg`
+
+Evaluation after training command completed:
+
+- rank accuracy: `0.944`
+- suit accuracy: `0.991`
+- full-card accuracy: `0.944`
+
+Remaining eval card confusions:
+
+- `10D -> 8D`
+- `10H -> 7C`
+- `6C -> 8C`
+- `7H -> 6H`
+- `8D -> 7D`
+- `8H -> 6H`
+
+Important caveat:
+
+- `rank_cnn.pt`, `suit_cnn.pt`, and `metrics.json` timestamps did not update after the July 21 training run.
+- Treat `metrics.json` as the last promoted checkpoint baseline until the training-save/promotion behavior is checked.
+
 ## Landed Implementation Changes
 
 - Added the labeled capture tool and dataset metadata flow
@@ -66,7 +111,7 @@ From `cv/card_dataset_tool/models/metrics.json`:
 
 ## Main Remaining Error Clusters
 
-Current `card_confusions`:
+Promoted-checkpoint `card_confusions` from `metrics.json`:
 
 - `10D -> 9D`
 - `6C -> 7C`
@@ -81,7 +126,7 @@ Current `card_confusions`:
 - `9C -> 10C`
 - `9C -> 9S`
 
-Current `suit_confusions`:
+Promoted-checkpoint `suit_confusions` from `metrics.json`:
 
 - `C -> S`
 - `D -> S`
@@ -92,22 +137,13 @@ Current `suit_confusions`:
 
 When resuming work:
 
-1. Inspect the exact misclassified warped samples from the latest eval output.
-2. Separate bad warps and weak captures from true model weaknesses.
-3. Replace or rescan only clearly weak examples for high-confusion labels such as:
-   - `10D`
-   - `6C`
-   - `7C`
-   - `8C`
-   - `8D`
-   - `7H`
-   - `9C`
-4. Re-run:
+1. Inspect why the July 21 training run did not update `rank_cnn.pt`, `suit_cnn.pt`, or `metrics.json`.
+2. Confirm whether checkpoint promotion is intentionally guarded, writing elsewhere, or failing silently.
+3. Re-run evaluation against the intended promoted checkpoints:
 
 ```powershell
-python -m cv.card_dataset_tool.triage_dataset
-python -m cv.card_dataset_tool.train_patch_cnn --test-per-label 3 --seeds 42,7,13,21
 python -m cv.card_dataset_tool.eval_patch_cnn --test-per-label 3
 ```
 
-5. Promote checkpoints only if `card_accuracy` beats `0.8519`.
+4. If promotion is fixed and `card_accuracy` remains above `0.8519`, update the promoted model artifacts and `metrics.json`.
+5. Review the remaining July 21 eval mistakes listed above before another capture pass.

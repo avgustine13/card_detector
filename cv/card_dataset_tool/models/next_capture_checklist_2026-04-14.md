@@ -4,12 +4,23 @@ Date: 2026-04-14
 
 Purpose: replace the most suspect samples in the current dataset before the next triage, training, and eval pass.
 
+Status: completed on 2026-07-21.
+
 Current baseline to beat:
 
 - `rank_accuracy`: `0.8981`
 - `suit_accuracy`: `0.9444`
 - `card_accuracy`: `0.8519`
 - promoted seed: `7`
+
+Result after recapture and evaluation:
+
+- `rank_accuracy`: `0.944`
+- `suit_accuracy`: `0.991`
+- `card_accuracy`: `0.944`
+- dataset count: `1140`
+
+Note: `rank_cnn.pt`, `suit_cnn.pt`, and `metrics.json` did not update after the July 21 training run, so checkpoint promotion still needs review.
 
 ## Capture Order
 
@@ -118,3 +129,8 @@ python -m cv.card_dataset_tool.eval_patch_cnn --test-per-label 3
 Promotion rule:
 
 - only keep new checkpoints if `card_accuracy` beats `0.8519`
+
+Follow-up:
+
+- inspect why the training run did not update the promoted checkpoint files
+- review remaining eval mistakes: `10D -> 8D`, `10H -> 7C`, `6C -> 8C`, `7H -> 6H`, `8D -> 7D`, `8H -> 6H`
