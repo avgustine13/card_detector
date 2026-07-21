@@ -332,6 +332,10 @@ def estimate_number_rank_by_pips(oriented_warped: np.ndarray, suit: str) -> str:
 
 
 def apply_number_rank_correction(label: str, oriented_warped: np.ndarray) -> tuple[str, str]:
+    # Disabled until we have raw failing frames from the live camera. Simple
+    # contour counts overcount/undercount pips depending on glare and overlap.
+    return label, ""
+
     if len(label) < 2:
         return label, ""
     rank = label[:-1]
