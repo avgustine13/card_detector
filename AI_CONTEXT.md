@@ -95,7 +95,31 @@ Remaining eval card confusions:
 Important caveat:
 
 - `rank_cnn.pt`, `suit_cnn.pt`, and `metrics.json` timestamps did not update after the July 21 training run.
-- Treat `metrics.json` as the last promoted checkpoint baseline until the training-save/promotion behavior is checked.
+- Checked on the Pi: this is expected with the current `--save-policy if-better` behavior.
+- `train_patch_cnn.py` evaluates the existing saved checkpoints on the same held-out split and only saves if the newly trained candidate strictly beats the saved checkpoint's card accuracy.
+- The July 21 `0.944` eval was from the already-saved checkpoints on the expanded dataset, so checkpoint files stayed unchanged because the new training run did not strictly beat the saved model on that split.
+- Treat `metrics.json` as stale reporting metadata for the old dataset until it is refreshed intentionally; the checkpoint files themselves are still usable for live testing.
+
+## Live Capture Plan
+
+Next step is real live recognition testing rather than another dataset capture pass.
+
+Recommended sequence:
+
+1. Use the existing promoted CNN checkpoints for live one-card recognition testing.
+2. Test real cards one at a time under the intended camera and lighting setup.
+3. Record failures by actual card label and predicted label.
+4. Save new samples only for repeatable misses, bad warps, or unstable index-corner crops.
+5. After enough real misses are collected, retrain and promote only if the saved-checkpoint eval improves.
+
+Live testing should focus first on the latest remaining eval mistakes:
+
+- `10D`
+- `10H`
+- `6C`
+- `7H`
+- `8D`
+- `8H`
 
 ## Landed Implementation Changes
 
@@ -137,13 +161,13 @@ Promoted-checkpoint `suit_confusions` from `metrics.json`:
 
 When resuming work:
 
-1. Inspect why the July 21 training run did not update `rank_cnn.pt`, `suit_cnn.pt`, or `metrics.json`.
-2. Confirm whether checkpoint promotion is intentionally guarded, writing elsewhere, or failing silently.
-3. Re-run evaluation against the intended promoted checkpoints:
+1. Run live one-card recognition with the current saved checkpoints.
+2. Capture notes for repeatable live failures, especially `10D`, `10H`, `6C`, `7H`, `8D`, and `8H`.
+3. Re-run evaluation as a sanity check when needed:
 
 ```powershell
 python -m cv.card_dataset_tool.eval_patch_cnn --test-per-label 3
 ```
 
-4. If promotion is fixed and `card_accuracy` remains above `0.8519`, update the promoted model artifacts and `metrics.json`.
-5. Review the remaining July 21 eval mistakes listed above before another capture pass.
+4. Refresh `metrics.json` intentionally if we want it to reflect the current dataset eval rather than the original promoted-training run.
+5. Do another capture pass only for repeatable real-world misses.
