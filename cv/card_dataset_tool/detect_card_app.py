@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import sys
 import time
 from pathlib import Path
@@ -13,7 +14,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from cv.card_common.camera import CameraOptions, open_camera
-from cv.card_dataset_tool.app import find_card_quad, warp_card
+from cv.card_dataset_tool.app import find_card_quad, is_valid_label, normalize_label, update_label, warp_card
 from cv.card_dataset_tool.cnn_common import load_checkpoint
 from cv.card_dataset_tool.live_patch_cnn import predict_patch, resolve_device
 from cv.card_dataset_tool.patch_preprocess import SUIT_ROI, extract_roi, normalize_patch_image
@@ -53,6 +54,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--device", default="auto", help="auto, cpu, or cuda.")
     parser.add_argument("--debug", action="store_true", help="Show the oriented card crop.")
     parser.add_argument("--image-path", default="", help="Run once on an existing image and save/show the captioned result.")
+    parser.add_argument("--expected-label", default="", help="Actual card label for saved debug captures, for example 7H.")
     parser.add_argument(
         "--rank-model",
         default=str(Path(__file__).with_name("models") / "rank_cnn.pt"),
@@ -67,6 +69,11 @@ def parse_args() -> argparse.Namespace:
         "--snapshot-dir",
         default=str(Path(__file__).with_name("detection_captures")),
         help="Directory for saved captioned frames.",
+    )
+    parser.add_argument(
+        "--log-path",
+        default=str(Path(__file__).with_name("detection_captures") / "detection_log.csv"),
+        help="CSV path for saved detection observations.",
     )
     parser.add_argument("--save-image", default="", help="Output path for --image-path captioned result.")
     parser.add_argument("--no-window", action="store_true", help="Do not open a preview window for --image-path.")
@@ -372,6 +379,7 @@ def draw_detection_overlay(
     frame,
     quad,
     contour,
+    expected_label: str,
     label: str,
     rank_confidence: float,
     suit_confidence: float,
@@ -391,14 +399,21 @@ def draw_detection_overlay(
         origin = (12, 74)
 
     if label:
+        match_text = ""
+        if expected_label:
+            match_text = "match" if is_valid_label(expected_label) and expected_label == label else "mismatch"
         lines = [
             card_full_name(label),
             f"{label}  rank {rank_confidence:.2f}  suit {suit_confidence:.2f}",
         ]
+        if expected_label:
+            lines.append(f"actual {expected_label}  {match_text}")
         if correction:
             lines.append(correction)
     else:
         lines = [status]
+        if expected_label:
+            lines.append(f"actual {expected_label}")
     draw_text_box(canvas, lines, origin, color)
     return canvas
 
@@ -426,16 +441,64 @@ def detect_frame(frame, min_area: int, rank_model, rank_id_to_label, suit_model,
     return corrected_label, rank_confidence, suit_confidence, quad, contour, oriented, area, status
 
 
-def save_snapshot(snapshot_dir: Path, frame, label: str, raw_frame=None) -> Path:
+def save_snapshot(snapshot_dir: Path, frame, expected_label: str, label: str, raw_frame=None) -> tuple[Path, Path | None]:
     snapshot_dir.mkdir(parents=True, exist_ok=True)
     stamp = time.strftime("%Y%m%d_%H%M%S")
+    safe_expected = expected_label if is_valid_label(expected_label) else "unknown"
     safe_label = label or "unknown"
-    path = snapshot_dir / f"{stamp}_{safe_label}_captioned.jpg"
-    cv2.imwrite(str(path), frame)
+    captioned_path = snapshot_dir / f"{stamp}_actual_{safe_expected}_pred_{safe_label}_captioned.jpg"
+    cv2.imwrite(str(captioned_path), frame)
+    raw_path = None
     if raw_frame is not None:
-        raw_path = snapshot_dir / f"{stamp}_{safe_label}_raw.jpg"
+        raw_path = snapshot_dir / f"{stamp}_actual_{safe_expected}_pred_{safe_label}_raw.jpg"
         cv2.imwrite(str(raw_path), raw_frame)
-    return path
+    return captioned_path, raw_path
+
+
+def append_detection_log(
+    log_path: Path,
+    expected_label: str,
+    predicted_label: str,
+    rank_confidence: float,
+    suit_confidence: float,
+    status: str,
+    contour_area: float,
+    captioned_path: Path | None,
+    raw_path: Path | None,
+) -> None:
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    write_header = not log_path.exists()
+    with log_path.open("a", newline="", encoding="utf-8") as handle:
+        writer = csv.writer(handle)
+        if write_header:
+            writer.writerow(
+                [
+                    "timestamp",
+                    "expected",
+                    "predicted",
+                    "match",
+                    "rank_confidence",
+                    "suit_confidence",
+                    "status",
+                    "contour_area",
+                    "captioned_path",
+                    "raw_path",
+                ]
+            )
+        writer.writerow(
+            [
+                time.strftime("%Y%m%d_%H%M%S"),
+                expected_label,
+                predicted_label,
+                expected_label == predicted_label if is_valid_label(expected_label) and predicted_label else "",
+                f"{rank_confidence:.4f}",
+                f"{suit_confidence:.4f}",
+                status,
+                f"{contour_area:.1f}",
+                str(captioned_path or ""),
+                str(raw_path or ""),
+            ]
+        )
 
 
 def run_image_once(args: argparse.Namespace, rank_model, rank_id_to_label, suit_model, suit_id_to_label, device) -> int:
@@ -445,16 +508,37 @@ def run_image_once(args: argparse.Namespace, rank_model, rank_id_to_label, suit_
         print(f"Failed to read image: {image_path}")
         return 1
 
+    expected_label = normalize_label(args.expected_label)
     label, rank_confidence, suit_confidence, quad, contour, warped, _area, status = detect_frame(
         frame, args.min_area, rank_model, rank_id_to_label, suit_model, suit_id_to_label, device
     )
     correction = status if status.startswith("shape ") else ""
-    captioned = draw_detection_overlay(frame, quad, contour, label, rank_confidence, suit_confidence, status, correction)
-    output_path = Path(args.save_image) if args.save_image else save_snapshot(Path(args.snapshot_dir), captioned, label)
-    cv2.imwrite(str(output_path), captioned)
+    captioned = draw_detection_overlay(
+        frame, quad, contour, expected_label, label, rank_confidence, suit_confidence, status, correction
+    )
+    if args.save_image:
+        output_path = Path(args.save_image)
+        cv2.imwrite(str(output_path), captioned)
+        raw_path = None
+    else:
+        output_path, raw_path = save_snapshot(Path(args.snapshot_dir), captioned, expected_label, label, frame)
+    append_detection_log(
+        Path(args.log_path),
+        expected_label,
+        label,
+        rank_confidence,
+        suit_confidence,
+        status,
+        _area,
+        output_path,
+        raw_path,
+    )
 
     print(f"Image: {image_path}")
+    print(f"Expected: {expected_label or '-'}")
     print(f"Detected: {card_full_name(label) if label else '-'}")
+    if is_valid_label(expected_label) and label:
+        print(f"Match: {expected_label == label}")
     if label:
         print(f"Label: {label}")
         print(f"Rank confidence: {rank_confidence:.4f}")
@@ -497,9 +581,10 @@ def main() -> int:
 
     print(f"Using backend: {selected_backend}")
     print(f"Device: {device}")
-    print("Controls: s save captioned frame, g debug, Esc quit")
+    print("Controls: type actual label, '-' clear, backspace edit, s save, g debug, Esc quit")
 
     debug_enabled = args.debug
+    expected_label = normalize_label(args.expected_label)
     try:
         while True:
             ok, frame = cap.read()
@@ -512,7 +597,7 @@ def main() -> int:
             )
             correction = status if status.startswith("shape ") else ""
             preview = draw_detection_overlay(
-                frame, quad, contour, label, rank_confidence, suit_confidence, status, correction
+                frame, quad, contour, expected_label, label, rank_confidence, suit_confidence, status, correction
             )
             cv2.imshow("card_detection", preview)
             if debug_enabled and warped is not None:
@@ -527,8 +612,25 @@ def main() -> int:
                     cv2.destroyWindow("card_detection_warped")
                 continue
             if key == ord("s"):
-                saved_path = save_snapshot(Path(args.snapshot_dir), preview, label, frame)
-                print(f"Saved {saved_path}")
+                captioned_path, raw_path = save_snapshot(Path(args.snapshot_dir), preview, expected_label, label, frame)
+                append_detection_log(
+                    Path(args.log_path),
+                    expected_label,
+                    label,
+                    rank_confidence,
+                    suit_confidence,
+                    status,
+                    _area,
+                    captioned_path,
+                    raw_path,
+                )
+                match_text = ""
+                if is_valid_label(expected_label) and label:
+                    match_text = " match" if expected_label == label else " mismatch"
+                print(f"Saved {captioned_path}{match_text}")
+                continue
+            if key != 255:
+                expected_label = normalize_label(update_label(expected_label, key))
     finally:
         cap.release()
         cv2.destroyAllWindows()
