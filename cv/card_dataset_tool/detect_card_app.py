@@ -127,7 +127,7 @@ def apply_shape_suit_correction(label: str, warped: np.ndarray) -> tuple[str, st
 
     oriented = orient_card_to_corner(warped)
     shape_suit = classify_red_suit_shape(oriented)
-    if shape_suit and shape_suit != label[-1]:
+    if label[-1] == "H" and shape_suit == "D":
         return f"{label[:-1]}{shape_suit}", f"shape {label[-1]}->{shape_suit}"
     return label, ""
 
