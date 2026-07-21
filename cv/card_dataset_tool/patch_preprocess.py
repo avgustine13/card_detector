@@ -5,7 +5,7 @@ import numpy as np
 
 
 RANK_ROI = (0, 0, 128, 160)
-SUIT_ROI = (0, 96, 128, 128)
+SUIT_ROI = (0, 88, 150, 180)
 PATCH_SIZE = (96, 96)
 
 
@@ -32,11 +32,44 @@ def orient_card_to_corner(image: np.ndarray) -> np.ndarray:
 
 
 def normalize_patch_image(patch: np.ndarray, target: str) -> np.ndarray:
-    del target
-    gray = cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY)
-    scaled = cv2.resize(gray, PATCH_SIZE, interpolation=cv2.INTER_AREA)
-    return cv2.equalizeHist(scaled)
+    scaled = cv2.resize(patch, PATCH_SIZE, interpolation=cv2.INTER_AREA)
+    if target == "suit":
+        return scaled
+
+    gray = cv2.cvtColor(scaled, cv2.COLOR_BGR2GRAY)
+    return cv2.equalizeHist(gray)
 
 
 def normalize_patch_feature(patch: np.ndarray, target: str) -> np.ndarray:
     return normalize_patch_image(patch, target).astype(np.float32).reshape(-1) / 255.0
+
+
+def patch_channel_count(target: str) -> int:
+    return 3 if target == "suit" else 1
+
+
+def patch_to_tensor_array(patch: np.ndarray) -> np.ndarray:
+    if patch.ndim == 2:
+        return patch.astype(np.float32)[None, :, :] / 255.0
+    return np.transpose(patch.astype(np.float32), (2, 0, 1)) / 255.0
+
+
+def suit_color_group(patch: np.ndarray) -> str:
+    if patch.ndim != 3:
+        return "unknown"
+
+    b, g, r = cv2.split(patch)
+    ink_mask = np.minimum.reduce([b, g, r]) < 215
+    if not np.any(ink_mask):
+        return "unknown"
+
+    red_pixels = ink_mask & (r > 80) & ((r.astype(np.int16) - np.maximum(b, g).astype(np.int16)) > 25)
+    dark_pixels = ink_mask & (np.maximum.reduce([b, g, r]) < 120)
+    red_ratio = float(red_pixels.sum()) / float(ink_mask.sum())
+    dark_ratio = float(dark_pixels.sum()) / float(ink_mask.sum())
+
+    if red_ratio > 0.18:
+        return "red"
+    if dark_ratio > 0.35:
+        return "black"
+    return "unknown"

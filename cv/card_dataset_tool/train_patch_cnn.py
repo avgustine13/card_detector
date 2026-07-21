@@ -17,12 +17,13 @@ from cv.card_dataset_tool.cnn_common import (
     build_label_maps,
     load_checkpoint,
     load_grouped_dataset,
-    patch_tensor_from_sample,
+    patch_tensor_for_model,
     save_checkpoint,
     split_grouped_dataset,
     summarize_label_counts,
     write_metrics_json,
 )
+from cv.card_dataset_tool.patch_preprocess import patch_channel_count, patch_to_tensor_array, suit_color_group
 
 
 def parse_args() -> argparse.Namespace:
@@ -85,7 +86,7 @@ def train_classifier(
     device: torch.device,
 ) -> Tuple[TinyPatchCNN, Dict[int, str], float, Counter[Tuple[str, str]], List[Tuple[str, str, Path]]]:
     label_to_id, id_to_label = build_label_maps(train_samples + test_samples, target)
-    model = TinyPatchCNN(len(label_to_id)).to(device)
+    model = TinyPatchCNN(len(label_to_id), input_channels=patch_channel_count(target)).to(device)
     train_loader = build_loader(train_samples, target, label_to_id, batch_size, True)
     test_loader = build_loader(test_samples, target, label_to_id, batch_size, False)
 
@@ -143,13 +144,20 @@ def evaluate_full_cards(
     mistakes: List[Tuple[str, str, Path]] = []
 
     for sample in test_samples:
-        rank_tensor = torch.from_numpy((sample.rank_patch.astype("float32") / 255.0)[None, None, :, :]).to(device)
-        suit_tensor = torch.from_numpy((sample.suit_patch.astype("float32") / 255.0)[None, None, :, :]).to(device)
+        rank_tensor = torch.from_numpy(patch_to_tensor_array(sample.rank_patch)[None, :, :, :]).to(device)
+        suit_tensor = torch.from_numpy(patch_to_tensor_array(sample.suit_patch)[None, :, :, :]).to(device)
         with torch.no_grad():
             rank_logits = rank_model(rank_tensor)
             suit_logits = suit_model(suit_tensor)
         predicted_rank = rank_id_to_label[int(torch.argmax(rank_logits, dim=1).item())]
-        predicted_suit = suit_id_to_label[int(torch.argmax(suit_logits, dim=1).item())]
+        suit_probabilities = torch.softmax(suit_logits, dim=1)[0]
+        color_group = suit_color_group(sample.suit_patch)
+        allowed_suits = {"H", "D"} if color_group == "red" else {"C", "S"} if color_group == "black" else set()
+        if allowed_suits:
+            for index, label in suit_id_to_label.items():
+                if label not in allowed_suits:
+                    suit_probabilities[index] = -1.0
+        predicted_suit = suit_id_to_label[int(torch.argmax(suit_probabilities, dim=0).item())]
         predicted_label = f"{predicted_rank}{predicted_suit}"
         expected_labels.append(sample.label)
         predicted_labels.append(predicted_label)
@@ -200,10 +208,17 @@ def evaluate_saved_models(
 
     for sample in test_samples:
         with torch.no_grad():
-            rank_logits = rank_model(patch_tensor_from_sample(sample, "rank", device))
-            suit_logits = suit_model(patch_tensor_from_sample(sample, "suit", device))
+            rank_logits = rank_model(patch_tensor_for_model(rank_model, sample.rank_patch, device))
+            suit_logits = suit_model(patch_tensor_for_model(suit_model, sample.suit_patch, device))
         rank_label = rank_id_to_label[int(torch.argmax(rank_logits, dim=1).item())]
-        suit_label = suit_id_to_label[int(torch.argmax(suit_logits, dim=1).item())]
+        suit_probabilities = torch.softmax(suit_logits, dim=1)[0]
+        color_group = suit_color_group(sample.suit_patch)
+        allowed_suits = {"H", "D"} if color_group == "red" else {"C", "S"} if color_group == "black" else set()
+        if allowed_suits:
+            for index, label in suit_id_to_label.items():
+                if label not in allowed_suits:
+                    suit_probabilities[index] = -1.0
+        suit_label = suit_id_to_label[int(torch.argmax(suit_probabilities, dim=0).item())]
 
         expected_rank.append(sample.rank)
         predicted_rank.append(rank_label)

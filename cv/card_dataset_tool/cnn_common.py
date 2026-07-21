@@ -13,7 +13,14 @@ from torch import nn
 from torch.utils.data import Dataset
 
 from cv.card_dataset_tool.dataset_meta import include_image_path, load_meta_index
-from cv.card_dataset_tool.patch_preprocess import PATCH_SIZE, extract_roi, normalize_patch_image, orient_card_to_corner
+from cv.card_dataset_tool.patch_preprocess import (
+    PATCH_SIZE,
+    extract_roi,
+    normalize_patch_image,
+    orient_card_to_corner,
+    patch_channel_count,
+    patch_to_tensor_array,
+)
 
 
 @dataclass(frozen=True)
@@ -100,17 +107,17 @@ class CardPatchDataset(Dataset):
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
         sample = self.samples[index]
         patch = sample.rank_patch if self.target == "rank" else sample.suit_patch
-        patch_tensor = torch.from_numpy((patch.astype(np.float32) / 255.0)[None, :, :])
+        patch_tensor = torch.from_numpy(patch_to_tensor_array(patch))
         label_name = sample.rank if self.target == "rank" else sample.suit
         label_tensor = torch.tensor(self.label_to_id[label_name], dtype=torch.long)
         return patch_tensor, label_tensor
 
 
 class TinyPatchCNN(nn.Module):
-    def __init__(self, num_classes: int) -> None:
+    def __init__(self, num_classes: int, input_channels: int = 1) -> None:
         super().__init__()
         self.features = nn.Sequential(
-            nn.Conv2d(1, 16, kernel_size=3, padding=1),
+            nn.Conv2d(input_channels, 16, kernel_size=3, padding=1),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(2),
             nn.Conv2d(16, 32, kernel_size=3, padding=1),
@@ -165,6 +172,7 @@ def save_checkpoint(
             "target": target,
             "id_to_label": id_to_label,
             "patch_size": patch_size,
+            "input_channels": patch_channel_count(target),
             "state_dict": model.state_dict(),
         },
         output_path,
@@ -174,7 +182,8 @@ def save_checkpoint(
 def load_checkpoint(checkpoint_path: Path, device: torch.device) -> Tuple[TinyPatchCNN, Dict[int, str], str]:
     checkpoint = torch.load(checkpoint_path, map_location=device)
     id_to_label = {int(key): value for key, value in checkpoint["id_to_label"].items()}
-    model = TinyPatchCNN(len(id_to_label))
+    input_channels = int(checkpoint.get("input_channels", 1))
+    model = TinyPatchCNN(len(id_to_label), input_channels=input_channels)
     model.load_state_dict(checkpoint["state_dict"])
     model.to(device)
     model.eval()
@@ -183,7 +192,16 @@ def load_checkpoint(checkpoint_path: Path, device: torch.device) -> Tuple[TinyPa
 
 def patch_tensor_from_sample(sample: PatchSample, target: str, device: torch.device) -> torch.Tensor:
     patch = sample.rank_patch if target == "rank" else sample.suit_patch
-    return torch.from_numpy((patch.astype(np.float32) / 255.0)[None, None, :, :]).to(device)
+    return torch.from_numpy(patch_to_tensor_array(patch)[None, :, :, :]).to(device)
+
+
+def patch_tensor_for_model(model: TinyPatchCNN, patch: np.ndarray, device: torch.device) -> torch.Tensor:
+    tensor_array = patch_to_tensor_array(patch)
+    expected_channels = int(model.features[0].in_channels)
+    if expected_channels == 1 and tensor_array.shape[0] == 3:
+        gray = cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY)
+        tensor_array = patch_to_tensor_array(gray)
+    return torch.from_numpy(tensor_array[None, :, :, :]).to(device)
 
 
 def write_metrics_json(output_path: Path, payload: dict) -> None:

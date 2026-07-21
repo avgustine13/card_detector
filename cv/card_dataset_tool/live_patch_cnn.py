@@ -18,7 +18,13 @@ if str(REPO_ROOT) not in sys.path:
 from cv.card_common.camera import CameraOptions, open_camera
 from cv.card_dataset_tool.app import find_card_quad, is_valid_label, normalize_label, update_label, warp_card
 from cv.card_dataset_tool.cnn_common import load_checkpoint
-from cv.card_dataset_tool.patch_preprocess import extract_roi, normalize_patch_image, orient_card_to_corner
+from cv.card_dataset_tool.patch_preprocess import (
+    extract_roi,
+    normalize_patch_image,
+    orient_card_to_corner,
+    patch_to_tensor_array,
+    suit_color_group,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -68,10 +74,21 @@ def predict_patch(
     id_to_label: dict[int, str],
     patch: np.ndarray,
     device: torch.device,
+    allowed_labels: set[str] | None = None,
 ) -> Tuple[str, float]:
-    tensor = torch.from_numpy((patch.astype(np.float32) / 255.0)[None, None, :, :]).to(device)
+    tensor_array = patch_to_tensor_array(patch)
+    expected_channels = int(model.features[0].in_channels)
+    if expected_channels == 1 and tensor_array.shape[0] == 3:
+        gray = cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY)
+        tensor_array = patch_to_tensor_array(gray)
+    tensor = torch.from_numpy(tensor_array[None, :, :, :]).to(device)
     with torch.no_grad():
         probabilities = torch.softmax(model(tensor), dim=1)[0]
+    if allowed_labels:
+        probabilities = probabilities.clone()
+        for index, label in id_to_label.items():
+            if label not in allowed_labels:
+                probabilities[index] = -1.0
     confidence, index = torch.max(probabilities, dim=0)
     return id_to_label[int(index.item())], float(confidence.item())
 
@@ -88,7 +105,9 @@ def predict_card(
     rank_patch = normalize_patch_image(extract_roi(oriented, "rank"), "rank")
     suit_patch = normalize_patch_image(extract_roi(oriented, "suit"), "suit")
     rank, rank_confidence = predict_patch(rank_model, rank_id_to_label, rank_patch, device)
-    suit, suit_confidence = predict_patch(suit_model, suit_id_to_label, suit_patch, device)
+    color_group = suit_color_group(suit_patch)
+    allowed_suits = {"H", "D"} if color_group == "red" else {"C", "S"} if color_group == "black" else None
+    suit, suit_confidence = predict_patch(suit_model, suit_id_to_label, suit_patch, device, allowed_suits)
     return rank, rank_confidence, suit, suit_confidence, f"{rank}{suit}"
 
 
