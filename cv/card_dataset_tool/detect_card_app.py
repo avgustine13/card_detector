@@ -183,7 +183,11 @@ def apply_shape_suit_correction(label: str, oriented_warped: np.ndarray) -> tupl
 def suit_color_group(oriented_warped: np.ndarray) -> str:
     x, y, width, height = SUIT_ROI
     suit_roi = oriented_warped[y : y + height, x : x + width]
-    hsv = cv2.cvtColor(suit_roi, cv2.COLOR_BGR2HSV)
+    return roi_color_group(suit_roi)
+
+
+def roi_color_group(roi: np.ndarray) -> str:
+    hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
     hue, saturation, value = cv2.split(hsv)
     red_count = int(((((hue <= 12) | (hue >= 165)) & (saturation >= 45) & (value <= 245))).sum())
     black_count = int((((value <= 145) & (saturation <= 135))).sum())
@@ -207,6 +211,21 @@ def suit_color_score(label: str, color_group: str) -> float:
     return 1.0
 
 
+def rank_color_score(label: str, oriented_warped: np.ndarray) -> float:
+    if len(label) < 2:
+        return 1.0
+    rank_roi = extract_roi(oriented_warped, "rank")
+    color_group = roi_color_group(rank_roi)
+    if color_group == "unknown":
+        return 0.75
+    suit = label[-1]
+    if suit in ("D", "H"):
+        return 1.0 if color_group == "red" else 0.18
+    if suit in ("C", "S"):
+        return 1.0 if color_group == "black" else 0.18
+    return 1.0
+
+
 def index_ink_score(oriented_warped: np.ndarray) -> float:
     rank_roi = extract_roi(oriented_warped, "rank")
     suit_roi = extract_roi(oriented_warped, "suit")
@@ -219,6 +238,33 @@ def index_ink_score(oriented_warped: np.ndarray) -> float:
     if rank_ink > 7800 or suit_ink > 9000:
         return 0.35
     return 1.0
+
+
+def rank_layout_score(oriented_warped: np.ndarray) -> float:
+    rank_roi = extract_roi(oriented_warped, "rank")
+    gray = cv2.cvtColor(rank_roi, cv2.COLOR_BGR2GRAY)
+    mask = gray < 175
+    ys, xs = np.where(mask)
+    if len(xs) < 70:
+        return 0.20
+
+    x0 = int(xs.min())
+    y0 = int(ys.min())
+    x1 = int(xs.max())
+    y1 = int(ys.max())
+    width = x1 - x0 + 1
+    height = y1 - y0 + 1
+
+    score = 1.0
+    if x0 > 34:
+        score *= 0.30
+    if y0 > 34:
+        score *= 0.30
+    if width > 118 and height > 145:
+        score *= 0.35
+    if len(xs) > 6500:
+        score *= 0.35
+    return score
 
 
 def predict_card_best_orientation(
@@ -241,7 +287,9 @@ def predict_card_best_orientation(
             min(rank_confidence, suit_confidence)
             * ((rank_confidence + suit_confidence) / 2.0)
             * suit_color_score(label, suit_color_group(oriented))
+            * rank_color_score(label, oriented)
             * index_ink_score(oriented)
+            * rank_layout_score(oriented)
         )
         candidate = (score, rank_confidence, suit_confidence, label, oriented, rotation)
         if best is None or candidate[0] > best[0]:
@@ -329,12 +377,15 @@ def detect_frame(frame, min_area: int, rank_model, rank_id_to_label, suit_model,
     return corrected_label, rank_confidence, suit_confidence, quad, contour, oriented, area, status
 
 
-def save_snapshot(snapshot_dir: Path, frame, label: str) -> Path:
+def save_snapshot(snapshot_dir: Path, frame, label: str, raw_frame=None) -> Path:
     snapshot_dir.mkdir(parents=True, exist_ok=True)
     stamp = time.strftime("%Y%m%d_%H%M%S")
     safe_label = label or "unknown"
     path = snapshot_dir / f"{stamp}_{safe_label}_captioned.jpg"
     cv2.imwrite(str(path), frame)
+    if raw_frame is not None:
+        raw_path = snapshot_dir / f"{stamp}_{safe_label}_raw.jpg"
+        cv2.imwrite(str(raw_path), raw_frame)
     return path
 
 
@@ -427,7 +478,7 @@ def main() -> int:
                     cv2.destroyWindow("card_detection_warped")
                 continue
             if key == ord("s"):
-                saved_path = save_snapshot(Path(args.snapshot_dir), preview, label)
+                saved_path = save_snapshot(Path(args.snapshot_dir), preview, label, frame)
                 print(f"Saved {saved_path}")
     finally:
         cap.release()
