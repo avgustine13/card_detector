@@ -5,3 +5,4 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .DS_Store
+cv/card_dataset_tool/models/live_patch_cnn.out
