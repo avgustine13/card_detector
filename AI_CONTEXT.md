@@ -26,6 +26,8 @@ Multi-card and overlay work were intentionally deferred until the single-card pi
 
 - Active workstream: `cv/card_dataset_tool/`
 - Goal: offline card rank and suit recognition from warped card crops using corner patches
+- Raspberry Pi test checkout: `avgustine@192.168.50.153:/home/avgustine/card_detector`
+- Pi inference venv: `/home/avgustine/home_fortress/.venv-capture`
 - Latest dataset update: July 21, 2026 recapture for `6C`, `7C`, `8C`, `8D`, `10D`, `7H`, and `9C`
 - Dataset size after recapture: `1140` raw images, `1140` warped images, `1140` metadata records
 - Verified training environment:
@@ -171,6 +173,29 @@ cd /home/avgustine/card_detector
 
 This displays the detected card contour with a caption like `King of Diamonds`; press `space` to save a captioned frame.
 Type the actual card label before saving. Saved detection files include both actual and predicted labels, for example `actual_7H_pred_10H`, and observations are appended to `cv/card_dataset_tool/detection_captures/detection_log.csv`.
+
+July 22, 2026 captioned-detector test:
+
+- Fresh detection capture folder was cleared before the test.
+- Save key was moved from `s` to `space` because `s` conflicted with entering spades labels such as `6S`.
+- The fresh labeled log had `40` valid actual-label rows, intentionally focused on failures rather than a balanced accuracy test.
+- Only `1` of those `40` rows was correct (`8S -> 8S`), so treat this set as a hard-negative tuning set, not as deployment accuracy.
+- Error split:
+  - rank-only: `19`
+  - suit-only: `16`
+  - rank and suit both wrong: `4`
+- Main confirmed failure clusters:
+  - `JC -> JH` x3, plus `JC -> QD`, `JC -> JD`
+  - `QC -> QH` x2 and `QC -> QD` x2
+  - `8H -> 7H` x3 and `8H -> 6H`
+  - `JS -> JH` x2 and `JS -> KH`
+  - single hard misses include `6S -> 8S`, `7S -> QS`, `10S -> KS`, `10D -> KD`, `7D -> 10D`, `AC -> AD`, `10H -> 9H`
+- The color/shape correction in `detect_card_app.py` is actively hurting black suits:
+  - `color C->H` happened `5` times
+  - `color S->H` happened `3` times
+- Tomorrow's first code step: disable the shape-based suit correction entirely in the captioned detector and rerun the same actual-label workflow.
+- Tomorrow's second step: use the saved raw frames in `cv/card_dataset_tool/detection_captures/` as a hard-negative review set for orientation/rank tuning or targeted retraining.
+- Do not commit Pi credentials or passwords to the repository. Keep only host/user/path reminders in docs.
 
 Four-card order recognizer:
 
