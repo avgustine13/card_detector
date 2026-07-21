@@ -23,7 +23,7 @@ from cv.card_dataset_tool.cnn_common import (
     summarize_label_counts,
     write_metrics_json,
 )
-from cv.card_dataset_tool.patch_preprocess import patch_channel_count, patch_to_tensor_array, suit_color_group
+from cv.card_dataset_tool.patch_preprocess import patch_channel_count, patch_to_tensor_array
 
 
 def parse_args() -> argparse.Namespace:
@@ -150,14 +150,7 @@ def evaluate_full_cards(
             rank_logits = rank_model(rank_tensor)
             suit_logits = suit_model(suit_tensor)
         predicted_rank = rank_id_to_label[int(torch.argmax(rank_logits, dim=1).item())]
-        suit_probabilities = torch.softmax(suit_logits, dim=1)[0]
-        color_group = suit_color_group(sample.suit_patch)
-        allowed_suits = {"H", "D"} if color_group == "red" else {"C", "S"} if color_group == "black" else set()
-        if allowed_suits:
-            for index, label in suit_id_to_label.items():
-                if label not in allowed_suits:
-                    suit_probabilities[index] = -1.0
-        predicted_suit = suit_id_to_label[int(torch.argmax(suit_probabilities, dim=0).item())]
+        predicted_suit = suit_id_to_label[int(torch.argmax(suit_logits, dim=1).item())]
         predicted_label = f"{predicted_rank}{predicted_suit}"
         expected_labels.append(sample.label)
         predicted_labels.append(predicted_label)
@@ -211,14 +204,7 @@ def evaluate_saved_models(
             rank_logits = rank_model(patch_tensor_for_model(rank_model, sample.rank_patch, device))
             suit_logits = suit_model(patch_tensor_for_model(suit_model, sample.suit_patch, device))
         rank_label = rank_id_to_label[int(torch.argmax(rank_logits, dim=1).item())]
-        suit_probabilities = torch.softmax(suit_logits, dim=1)[0]
-        color_group = suit_color_group(sample.suit_patch)
-        allowed_suits = {"H", "D"} if color_group == "red" else {"C", "S"} if color_group == "black" else set()
-        if allowed_suits:
-            for index, label in suit_id_to_label.items():
-                if label not in allowed_suits:
-                    suit_probabilities[index] = -1.0
-        suit_label = suit_id_to_label[int(torch.argmax(suit_probabilities, dim=0).item())]
+        suit_label = suit_id_to_label[int(torch.argmax(suit_logits, dim=1).item())]
 
         expected_rank.append(sample.rank)
         predicted_rank.append(rank_label)

@@ -23,7 +23,6 @@ from cv.card_dataset_tool.patch_preprocess import (
     normalize_patch_image,
     orient_card_to_corner,
     patch_to_tensor_array,
-    suit_color_group,
 )
 
 
@@ -74,7 +73,6 @@ def predict_patch(
     id_to_label: dict[int, str],
     patch: np.ndarray,
     device: torch.device,
-    allowed_labels: set[str] | None = None,
 ) -> Tuple[str, float]:
     tensor_array = patch_to_tensor_array(patch)
     expected_channels = int(model.features[0].in_channels)
@@ -84,11 +82,6 @@ def predict_patch(
     tensor = torch.from_numpy(tensor_array[None, :, :, :]).to(device)
     with torch.no_grad():
         probabilities = torch.softmax(model(tensor), dim=1)[0]
-    if allowed_labels:
-        probabilities = probabilities.clone()
-        for index, label in id_to_label.items():
-            if label not in allowed_labels:
-                probabilities[index] = -1.0
     confidence, index = torch.max(probabilities, dim=0)
     return id_to_label[int(index.item())], float(confidence.item())
 
@@ -105,9 +98,7 @@ def predict_card(
     rank_patch = normalize_patch_image(extract_roi(oriented, "rank"), "rank")
     suit_patch = normalize_patch_image(extract_roi(oriented, "suit"), "suit")
     rank, rank_confidence = predict_patch(rank_model, rank_id_to_label, rank_patch, device)
-    color_group = suit_color_group(suit_patch)
-    allowed_suits = {"H", "D"} if color_group == "red" else {"C", "S"} if color_group == "black" else None
-    suit, suit_confidence = predict_patch(suit_model, suit_id_to_label, suit_patch, device, allowed_suits)
+    suit, suit_confidence = predict_patch(suit_model, suit_id_to_label, suit_patch, device)
     return rank, rank_confidence, suit, suit_confidence, f"{rank}{suit}"
 
 

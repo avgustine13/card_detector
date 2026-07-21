@@ -6,11 +6,17 @@ import numpy as np
 
 RANK_ROI = (0, 0, 128, 160)
 SUIT_ROI = (0, 88, 150, 180)
+ORIENTATION_SUIT_ROI = (0, 96, 128, 128)
 PATCH_SIZE = (96, 96)
 
 
 def extract_roi(image: np.ndarray, target: str) -> np.ndarray:
     x, y, w, h = RANK_ROI if target == "rank" else SUIT_ROI
+    return image[y : y + h, x : x + w]
+
+
+def extract_orientation_suit_roi(image: np.ndarray) -> np.ndarray:
+    x, y, w, h = ORIENTATION_SUIT_ROI
     return image[y : y + h, x : x + w]
 
 
@@ -24,7 +30,7 @@ def orient_card_to_corner(image: np.ndarray) -> np.ndarray:
     best_score = -1.0
     for rotation in range(4):
         rotated = np.ascontiguousarray(np.rot90(image, rotation))
-        score = corner_ink_score(extract_roi(rotated, "rank")) + corner_ink_score(extract_roi(rotated, "suit"))
+        score = corner_ink_score(extract_roi(rotated, "rank")) + corner_ink_score(extract_orientation_suit_roi(rotated))
         if score > best_score:
             best_score = score
             best_image = rotated
