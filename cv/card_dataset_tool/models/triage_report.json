@@ -1,7 +1,7 @@
 {
-  "dataset_dir": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset",
+  "dataset_dir": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset",
   "label_count": 36,
-  "sample_count": 1080,
+  "sample_count": 1140,
   "stale_meta_records": [],
   "nearest_card_confusions": [
     [
@@ -22,6 +22,11 @@
     [
       "8C",
       "7C",
+      18
+    ],
+    [
+      "6H",
+      "7H",
       17
     ],
     [
@@ -35,6 +40,11 @@
       16
     ],
     [
+      "7H",
+      "6H",
+      16
+    ],
+    [
       "8H",
       "6H",
       16
@@ -45,31 +55,26 @@
       16
     ],
     [
-      "AD",
-      "AH",
+      "10D",
+      "6H",
       15
     ],
     [
-      "7S",
-      "7C",
-      14
-    ],
-    [
-      "AS",
       "AD",
-      14
-    ],
-    [
-      "JC",
-      "JH",
-      14
+      "AH",
+      15
     ]
   ],
   "nearest_rank_confusions": [
     [
       "A",
       "8",
-      109
+      106
+    ],
+    [
+      "7",
+      "6",
+      73
     ],
     [
       "J",
@@ -77,29 +82,24 @@
       72
     ],
     [
+      "6",
+      "7",
+      71
+    ],
+    [
       "Q",
       "J",
       71
     ],
     [
-      "6",
+      "8",
       "7",
-      65
-    ],
-    [
-      "7",
-      "6",
-      62
+      59
     ],
     [
       "K",
       "J",
-      50
-    ],
-    [
-      "8",
-      "7",
-      49
+      53
     ],
     [
       "J",
@@ -109,7 +109,7 @@
     [
       "K",
       "Q",
-      44
+      45
     ],
     [
       "Q",
@@ -117,573 +117,573 @@
       41
     ],
     [
-      "10",
+      "8",
       "K",
-      37
+      40
     ],
     [
-      "9",
+      "10",
       "K",
-      31
+      39
     ]
   ],
   "nearest_suit_confusions": [
     [
       "S",
       "C",
+      163
+    ],
+    [
+      "C",
+      "S",
       157
     ],
     [
-      "C",
-      "S",
-      138
-    ],
-    [
       "D",
       "H",
-      130
+      125
     ],
     [
       "H",
       "D",
-      117
-    ],
-    [
-      "H",
-      "C",
-      99
+      115
     ],
     [
       "D",
       "S",
-      98
+      110
+    ],
+    [
+      "H",
+      "C",
+      86
     ],
     [
       "S",
       "D",
-      91
+      83
     ],
     [
       "C",
       "H",
-      72
-    ],
-    [
-      "C",
-      "D",
-      60
+      79
     ],
     [
       "H",
       "S",
-      54
+      74
+    ],
+    [
+      "C",
+      "D",
+      69
     ],
     [
       "D",
       "C",
-      42
+      55
     ],
     [
       "S",
       "H",
-      22
+      24
     ]
   ],
   "focus_labels": {
     "8D": [
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8D/20260403_180734_8D_warped.jpg",
-        "outlier_score": 0.083835,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8D/20260721_115236_8D_warped.jpg",
+        "outlier_score": 0.093812,
         "nearest_card_label": "6H",
-        "card_margin": -0.028201,
+        "card_margin": -0.037294,
         "nearest_rank": "7",
-        "rank_margin": -0.007012,
+        "rank_margin": -0.008503,
         "nearest_suit": "H",
-        "suit_margin": -0.001671
+        "suit_margin": -0.006351
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8D/20260403_185150_8D_warped.jpg",
-        "outlier_score": 0.089803,
-        "nearest_card_label": "6H",
-        "card_margin": -0.027681,
-        "nearest_rank": "7",
-        "rank_margin": -0.006571,
-        "nearest_suit": "H",
-        "suit_margin": -0.002013
-      },
-      {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8D/20260403_005602_8D_warped.jpg",
-        "outlier_score": 0.085012,
-        "nearest_card_label": "6H",
-        "card_margin": -0.026836,
-        "nearest_rank": "7",
-        "rank_margin": -0.004147,
-        "nearest_suit": "H",
-        "suit_margin": -0.002388
-      },
-      {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8D/20260407_002851_8D_warped.jpg",
-        "outlier_score": 0.065623,
-        "nearest_card_label": "6H",
-        "card_margin": -0.016209,
-        "nearest_rank": "7",
-        "rank_margin": -0.003176,
-        "nearest_suit": "C",
-        "suit_margin": 0.004448
-      },
-      {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8D/20260409_202627_8D_warped.jpg",
-        "outlier_score": 0.070219,
-        "nearest_card_label": "6H",
-        "card_margin": -0.015225,
-        "nearest_rank": "7",
-        "rank_margin": -0.005201,
-        "nearest_suit": "C",
-        "suit_margin": 0.002753
-      },
-      {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8D/20260409_200329_8D_warped.jpg",
-        "outlier_score": 0.064222,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8D/20260721_115240_8D_warped.jpg",
+        "outlier_score": 0.099196,
         "nearest_card_label": "7C",
-        "card_margin": -0.014719,
+        "card_margin": -0.029443,
         "nearest_rank": "7",
-        "rank_margin": -0.00599,
+        "rank_margin": -0.009374,
         "nearest_suit": "C",
-        "suit_margin": 0.000172
+        "suit_margin": -0.006991
+      },
+      {
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8D/20260721_115234_8D_warped.jpg",
+        "outlier_score": 0.087748,
+        "nearest_card_label": "7C",
+        "card_margin": -0.025702,
+        "nearest_rank": "7",
+        "rank_margin": -0.008358,
+        "nearest_suit": "C",
+        "suit_margin": -0.007574
+      },
+      {
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8D/20260403_180734_8D_warped.jpg",
+        "outlier_score": 0.079293,
+        "nearest_card_label": "6H",
+        "card_margin": -0.023659,
+        "nearest_rank": "7",
+        "rank_margin": -0.007136,
+        "nearest_suit": "H",
+        "suit_margin": -0.000841
+      },
+      {
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8D/20260403_005602_8D_warped.jpg",
+        "outlier_score": 0.081621,
+        "nearest_card_label": "6H",
+        "card_margin": -0.023444,
+        "nearest_rank": "7",
+        "rank_margin": -0.004019,
+        "nearest_suit": "H",
+        "suit_margin": -0.001785
+      },
+      {
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8D/20260403_185150_8D_warped.jpg",
+        "outlier_score": 0.085305,
+        "nearest_card_label": "6H",
+        "card_margin": -0.023182,
+        "nearest_rank": "7",
+        "rank_margin": -0.006576,
+        "nearest_suit": "H",
+        "suit_margin": -0.001251
       }
     ],
     "7D": [
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7D/20260409_202528_7D_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7D/20260409_202528_7D_warped.jpg",
         "outlier_score": 0.071507,
         "nearest_card_label": "6H",
         "card_margin": -0.017484,
         "nearest_rank": "6",
-        "rank_margin": 0.001704,
+        "rank_margin": 0.001593,
         "nearest_suit": "H",
-        "suit_margin": -0.006454
+        "suit_margin": -0.00571
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7D/20260403_180538_7D_warped.jpg",
-        "outlier_score": 0.075396,
-        "nearest_card_label": "7C",
-        "card_margin": -0.014311,
-        "nearest_rank": "6",
-        "rank_margin": 0.007316,
-        "nearest_suit": "H",
-        "suit_margin": -0.001717
-      },
-      {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7D/20260407_002100_7D_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7D/20260407_002100_7D_warped.jpg",
         "outlier_score": 0.075564,
         "nearest_card_label": "8D",
-        "card_margin": -0.013171,
+        "card_margin": -0.009857,
         "nearest_rank": "8",
-        "rank_margin": -0.010688,
+        "rank_margin": -0.011707,
         "nearest_suit": "S",
-        "suit_margin": 0.011002
+        "suit_margin": 0.011425
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7D/20260409_202515_7D_warped.jpg",
-        "outlier_score": 0.076161,
-        "nearest_card_label": "8D",
-        "card_margin": -0.010969,
-        "nearest_rank": "10",
-        "rank_margin": -0.008048,
-        "nearest_suit": "S",
-        "suit_margin": 0.016066
-      },
-      {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7D/20260409_195736_7D_warped.jpg",
-        "outlier_score": 0.093649,
-        "nearest_card_label": "6C",
-        "card_margin": -0.010584,
-        "nearest_rank": "J",
-        "rank_margin": -0.019209,
-        "nearest_suit": "S",
-        "suit_margin": 0.003054
-      },
-      {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7D/20260403_185003_7D_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7D/20260403_185003_7D_warped.jpg",
         "outlier_score": 0.067355,
         "nearest_card_label": "6H",
         "card_margin": -0.009555,
         "nearest_rank": "6",
-        "rank_margin": 0.001975,
+        "rank_margin": 0.001503,
         "nearest_suit": "H",
-        "suit_margin": -0.001544
+        "suit_margin": -0.000665
+      },
+      {
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7D/20260403_180538_7D_warped.jpg",
+        "outlier_score": 0.075396,
+        "nearest_card_label": "7C",
+        "card_margin": -0.009298,
+        "nearest_rank": "6",
+        "rank_margin": 0.005948,
+        "nearest_suit": "C",
+        "suit_margin": -0.000915
+      },
+      {
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7D/20260409_202515_7D_warped.jpg",
+        "outlier_score": 0.076161,
+        "nearest_card_label": "8D",
+        "card_margin": -0.009289,
+        "nearest_rank": "10",
+        "rank_margin": -0.006875,
+        "nearest_suit": "S",
+        "suit_margin": 0.015147
+      },
+      {
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7D/20260409_195736_7D_warped.jpg",
+        "outlier_score": 0.093649,
+        "nearest_card_label": "6C",
+        "card_margin": -0.008628,
+        "nearest_rank": "J",
+        "rank_margin": -0.0175,
+        "nearest_suit": "S",
+        "suit_margin": 0.002697
       }
     ],
     "10D": [
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10D/20260409_202221_10D_warped.jpg",
-        "outlier_score": 0.096788,
-        "nearest_card_label": "10H",
-        "card_margin": -0.026833,
-        "nearest_rank": "9",
-        "rank_margin": 0.002337,
-        "nearest_suit": "S",
-        "suit_margin": 0.010313
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10D/20260721_115328_10D_warped.jpg",
+        "outlier_score": 0.10599,
+        "nearest_card_label": "AC",
+        "card_margin": -0.037528,
+        "nearest_rank": "A",
+        "rank_margin": -0.024823,
+        "nearest_suit": "H",
+        "suit_margin": 0.002042
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10D/20260407_001903_10D_warped.jpg",
-        "outlier_score": 0.088016,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10D/20260721_115332_10D_warped.jpg",
+        "outlier_score": 0.111244,
         "nearest_card_label": "10H",
-        "card_margin": -0.02344,
-        "nearest_rank": "8",
-        "rank_margin": -0.000547,
+        "card_margin": -0.029695,
+        "nearest_rank": "K",
+        "rank_margin": -0.010322,
         "nearest_suit": "S",
-        "suit_margin": -0.001506
+        "suit_margin": -0.014578
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10D/20260409_195603_10D_warped.jpg",
-        "outlier_score": 0.092464,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10D/20260409_202221_10D_warped.jpg",
+        "outlier_score": 0.097325,
         "nearest_card_label": "10H",
-        "card_margin": -0.023265,
+        "card_margin": -0.02737,
         "nearest_rank": "8",
-        "rank_margin": -0.002274,
+        "rank_margin": 0.000283,
         "nearest_suit": "S",
-        "suit_margin": 0.01056
+        "suit_margin": 0.008813
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10D/20260407_001932_10D_warped.jpg",
-        "outlier_score": 0.089682,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10D/20260721_115301_10D_warped.jpg",
+        "outlier_score": 0.092616,
         "nearest_card_label": "10H",
-        "card_margin": -0.020591,
-        "nearest_rank": "8",
-        "rank_margin": -0.002029,
+        "card_margin": -0.024848,
+        "nearest_rank": "K",
+        "rank_margin": -0.00229,
         "nearest_suit": "S",
-        "suit_margin": -0.005359
+        "suit_margin": -0.001171
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10D/20260403_012330_10D_warped.jpg",
-        "outlier_score": 0.089745,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10D/20260409_195603_10D_warped.jpg",
+        "outlier_score": 0.093982,
         "nearest_card_label": "10H",
-        "card_margin": -0.018313,
+        "card_margin": -0.024782,
         "nearest_rank": "8",
-        "rank_margin": -6.9e-05,
+        "rank_margin": -0.004205,
         "nearest_suit": "S",
-        "suit_margin": 0.00807
+        "suit_margin": 0.009366
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10D/20260409_185507_10D_warped.jpg",
-        "outlier_score": 0.077071,
-        "nearest_card_label": "8D",
-        "card_margin": -0.013905,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10D/20260407_001903_10D_warped.jpg",
+        "outlier_score": 0.088487,
+        "nearest_card_label": "10H",
+        "card_margin": -0.023911,
         "nearest_rank": "8",
-        "rank_margin": -0.006809,
+        "rank_margin": -0.001266,
         "nearest_suit": "S",
-        "suit_margin": 0.00709
+        "suit_margin": -0.002246
       }
     ],
     "10H": [
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10H/20260409_202300_10H_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10H/20260409_202300_10H_warped.jpg",
         "outlier_score": 0.090008,
         "nearest_card_label": "6H",
         "card_margin": -0.039309,
         "nearest_rank": "6",
-        "rank_margin": -0.002843,
+        "rank_margin": -0.001546,
         "nearest_suit": "C",
-        "suit_margin": 0.007137
+        "suit_margin": 0.007145
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10H/20260403_180307_10H_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10H/20260403_180307_10H_warped.jpg",
         "outlier_score": 0.095546,
         "nearest_card_label": "6H",
         "card_margin": -0.038239,
         "nearest_rank": "9",
-        "rank_margin": -0.002669,
+        "rank_margin": -0.00206,
         "nearest_suit": "C",
-        "suit_margin": 0.008983
+        "suit_margin": 0.009359
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10H/20260403_004619_10H_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10H/20260403_004619_10H_warped.jpg",
         "outlier_score": 0.094298,
         "nearest_card_label": "6H",
         "card_margin": -0.037148,
         "nearest_rank": "6",
-        "rank_margin": -0.004942,
+        "rank_margin": -0.003782,
         "nearest_suit": "C",
-        "suit_margin": 0.006554
+        "suit_margin": 0.006356
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10H/20260409_194905_10H_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10H/20260409_194905_10H_warped.jpg",
         "outlier_score": 0.092129,
         "nearest_card_label": "6H",
         "card_margin": -0.035868,
         "nearest_rank": "9",
-        "rank_margin": -0.001558,
+        "rank_margin": -0.000895,
         "nearest_suit": "C",
-        "suit_margin": 0.006687
+        "suit_margin": 0.006944
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10H/20260403_180246_10H_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10H/20260403_180246_10H_warped.jpg",
         "outlier_score": 0.098551,
         "nearest_card_label": "6H",
         "card_margin": -0.03407,
         "nearest_rank": "9",
-        "rank_margin": -0.004333,
+        "rank_margin": -0.003683,
         "nearest_suit": "C",
-        "suit_margin": 0.010534
+        "suit_margin": 0.011311
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/10H/20260403_184533_10H_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/10H/20260403_184533_10H_warped.jpg",
         "outlier_score": 0.095018,
         "nearest_card_label": "6H",
         "card_margin": -0.030392,
         "nearest_rank": "6",
-        "rank_margin": -0.004656,
+        "rank_margin": -0.004023,
         "nearest_suit": "C",
-        "suit_margin": 0.005258
+        "suit_margin": 0.005261
       }
     ],
     "6H": [
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6H/20260409_202403_6H_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6H/20260409_202403_6H_warped.jpg",
         "outlier_score": 0.13082,
         "nearest_card_label": "8D",
-        "card_margin": -0.054741,
+        "card_margin": -0.055162,
         "nearest_rank": "K",
-        "rank_margin": -0.01272,
+        "rank_margin": -0.013029,
         "nearest_suit": "D",
-        "suit_margin": -0.008599
+        "suit_margin": -0.008825
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6H/20260407_002354_6H_warped.jpg",
-        "outlier_score": 0.114988,
-        "nearest_card_label": "8D",
-        "card_margin": -0.053469,
-        "nearest_rank": "8",
-        "rank_margin": -0.011217,
-        "nearest_suit": "D",
-        "suit_margin": -0.012294
-      },
-      {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6H/20260403_183510_6H_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6H/20260403_183510_6H_warped.jpg",
         "outlier_score": 0.127543,
         "nearest_card_label": "8D",
-        "card_margin": -0.050565,
+        "card_margin": -0.051253,
         "nearest_rank": "K",
-        "rank_margin": -0.015688,
+        "rank_margin": -0.016439,
         "nearest_suit": "D",
-        "suit_margin": -0.011088
+        "suit_margin": -0.011375
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6H/20260407_002341_6H_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6H/20260407_002354_6H_warped.jpg",
+        "outlier_score": 0.114988,
+        "nearest_card_label": "8D",
+        "card_margin": -0.051013,
+        "nearest_rank": "8",
+        "rank_margin": -0.010641,
+        "nearest_suit": "D",
+        "suit_margin": -0.012465
+      },
+      {
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6H/20260407_002341_6H_warped.jpg",
         "outlier_score": 0.118172,
-        "nearest_card_label": "7H",
-        "card_margin": -0.044203,
-        "nearest_rank": "10",
-        "rank_margin": -0.00378,
+        "nearest_card_label": "8D",
+        "card_margin": -0.039777,
+        "nearest_rank": "8",
+        "rank_margin": -0.004444,
         "nearest_suit": "D",
-        "suit_margin": -0.00516
+        "suit_margin": -0.005559
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6H/20260407_002416_6H_warped.jpg",
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6H/20260407_002416_6H_warped.jpg",
         "outlier_score": 0.044721,
-        "nearest_card_label": "7C",
-        "card_margin": 0.017264,
+        "nearest_card_label": "7H",
+        "card_margin": 0.01624,
         "nearest_rank": "7",
-        "rank_margin": 0.001192,
+        "rank_margin": 0.000796,
         "nearest_suit": "C",
-        "suit_margin": 0.00667
+        "suit_margin": 0.006289
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6H/20260403_183517_6H_warped.jpg",
-        "outlier_score": 0.038344,
-        "nearest_card_label": "7C",
-        "card_margin": 0.018214,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6H/20260407_002413_6H_warped.jpg",
+        "outlier_score": 0.052079,
+        "nearest_card_label": "7H",
+        "card_margin": 0.016961,
         "nearest_rank": "7",
-        "rank_margin": 4.8e-05,
-        "nearest_suit": "D",
-        "suit_margin": 0.00638
+        "rank_margin": 0.0029,
+        "nearest_suit": "C",
+        "suit_margin": 0.01115
       }
     ],
     "7C": [
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7C/20260409_200200_7C_warped.jpg",
-        "outlier_score": 0.108885,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7C/20260721_115154_7C_warped.jpg",
+        "outlier_score": 0.089905,
         "nearest_card_label": "6C",
-        "card_margin": -0.044973,
+        "card_margin": -0.029247,
+        "nearest_rank": "8",
+        "rank_margin": -0.010254,
+        "nearest_suit": "D",
+        "suit_margin": -0.003161
+      },
+      {
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7C/20260403_185218_7C_warped.jpg",
+        "outlier_score": 0.106435,
+        "nearest_card_label": "10H",
+        "card_margin": -0.028946,
         "nearest_rank": "K",
-        "rank_margin": -0.011229,
+        "rank_margin": -0.012311,
         "nearest_suit": "D",
-        "suit_margin": -0.006327
+        "suit_margin": -0.011492
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7C/20260403_005955_7C_warped.jpg",
-        "outlier_score": 0.104025,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7C/20260409_200200_7C_warped.jpg",
+        "outlier_score": 0.096988,
         "nearest_card_label": "6C",
-        "card_margin": -0.04379,
-        "nearest_rank": "10",
-        "rank_margin": -0.007666,
+        "card_margin": -0.027712,
+        "nearest_rank": "K",
+        "rank_margin": -0.00979,
         "nearest_suit": "D",
-        "suit_margin": -0.005177
+        "suit_margin": -0.004842
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7C/20260409_202435_7C_warped.jpg",
-        "outlier_score": 0.103171,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7C/20260409_202435_7C_warped.jpg",
+        "outlier_score": 0.089155,
         "nearest_card_label": "6C",
-        "card_margin": -0.043139,
+        "card_margin": -0.026826,
         "nearest_rank": "J",
-        "rank_margin": -0.016611,
+        "rank_margin": -0.013979,
         "nearest_suit": "S",
-        "suit_margin": -0.008049
+        "suit_margin": -0.005905
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7C/20260403_180806_7C_warped.jpg",
-        "outlier_score": 0.096578,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7C/20260721_115147_7C_warped.jpg",
+        "outlier_score": 0.081661,
         "nearest_card_label": "6C",
-        "card_margin": -0.041758,
-        "nearest_rank": "10",
-        "rank_margin": -0.008171,
-        "nearest_suit": "D",
-        "suit_margin": -0.005066
-      },
-      {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7C/20260403_185218_7C_warped.jpg",
-        "outlier_score": 0.116114,
-        "nearest_card_label": "6C",
-        "card_margin": -0.041507,
+        "card_margin": -0.026295,
         "nearest_rank": "K",
-        "rank_margin": -0.012846,
-        "nearest_suit": "D",
-        "suit_margin": -0.012238
+        "rank_margin": -0.014116,
+        "nearest_suit": "S",
+        "suit_margin": -0.008463
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/7C/20260403_005932_7C_warped.jpg",
-        "outlier_score": 0.095587,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/7C/20260403_005955_7C_warped.jpg",
+        "outlier_score": 0.090452,
         "nearest_card_label": "6C",
-        "card_margin": -0.038345,
-        "nearest_rank": "10",
-        "rank_margin": -0.006778,
+        "card_margin": -0.02626,
+        "nearest_rank": "8",
+        "rank_margin": -0.005449,
         "nearest_suit": "D",
-        "suit_margin": -0.004969
+        "suit_margin": -0.003
       }
     ],
     "6C": [
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6C/20260407_001027_6C_warped.jpg",
-        "outlier_score": 0.078219,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6C/20260721_114926_6C_warped.jpg",
+        "outlier_score": 0.110314,
         "nearest_card_label": "7C",
-        "card_margin": -0.032247,
+        "card_margin": -0.033808,
         "nearest_rank": "7",
-        "rank_margin": -0.003281,
-        "nearest_suit": "S",
-        "suit_margin": 0.008025
-      },
-      {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6C/20260409_202342_6C_warped.jpg",
-        "outlier_score": 0.077059,
-        "nearest_card_label": "7C",
-        "card_margin": -0.030085,
-        "nearest_rank": "7",
-        "rank_margin": -0.00438,
+        "rank_margin": -0.008046,
         "nearest_suit": "H",
-        "suit_margin": 0.008572
+        "suit_margin": 0.010192
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6C/20260403_015453_6C_warped.jpg",
-        "outlier_score": 0.074642,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6C/20260721_114952_6C_warped.jpg",
+        "outlier_score": 0.078236,
         "nearest_card_label": "7C",
-        "card_margin": -0.028569,
+        "card_margin": -0.021344,
         "nearest_rank": "7",
-        "rank_margin": -0.004113,
-        "nearest_suit": "D",
-        "suit_margin": 0.006736
+        "rank_margin": -0.002941,
+        "nearest_suit": "H",
+        "suit_margin": 0.009716
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6C/20260409_202333_6C_warped.jpg",
-        "outlier_score": 0.07451,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6C/20260409_202342_6C_warped.jpg",
+        "outlier_score": 0.074477,
         "nearest_card_label": "7C",
-        "card_margin": -0.027362,
+        "card_margin": -0.021288,
         "nearest_rank": "7",
-        "rank_margin": -0.004123,
+        "rank_margin": -0.003262,
         "nearest_suit": "D",
-        "suit_margin": 0.007229
+        "suit_margin": 0.008585
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6C/20260409_202337_6C_warped.jpg",
-        "outlier_score": 0.073701,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6C/20260407_001027_6C_warped.jpg",
+        "outlier_score": 0.071146,
         "nearest_card_label": "7C",
-        "card_margin": -0.026986,
+        "card_margin": -0.020516,
         "nearest_rank": "7",
-        "rank_margin": -0.00369,
-        "nearest_suit": "D",
-        "suit_margin": 0.003303
+        "rank_margin": -0.00215,
+        "nearest_suit": "S",
+        "suit_margin": 0.009632
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/6C/20260409_194648_6C_warped.jpg",
-        "outlier_score": 0.072619,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6C/20260403_015453_6C_warped.jpg",
+        "outlier_score": 0.069623,
         "nearest_card_label": "7C",
-        "card_margin": -0.025565,
+        "card_margin": -0.020431,
         "nearest_rank": "7",
-        "rank_margin": -0.003526,
+        "rank_margin": -0.003352,
         "nearest_suit": "D",
-        "suit_margin": 0.008347
+        "suit_margin": 0.007671
+      },
+      {
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/6C/20260409_202337_6C_warped.jpg",
+        "outlier_score": 0.069949,
+        "nearest_card_label": "7C",
+        "card_margin": -0.019369,
+        "nearest_rank": "7",
+        "rank_margin": -0.002695,
+        "nearest_suit": "D",
+        "suit_margin": 0.00405
       }
     ],
     "8C": [
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8C/20260409_202548_8C_warped.jpg",
-        "outlier_score": 0.094931,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8C/20260721_115053_8C_warped.jpg",
+        "outlier_score": 0.115473,
         "nearest_card_label": "6C",
-        "card_margin": -0.031443,
+        "card_margin": -0.025737,
         "nearest_rank": "K",
-        "rank_margin": -0.004059,
+        "rank_margin": -0.016779,
+        "nearest_suit": "S",
+        "suit_margin": -0.007162
+      },
+      {
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8C/20260721_115104_8C_warped.jpg",
+        "outlier_score": 0.093704,
+        "nearest_card_label": "6C",
+        "card_margin": -0.023597,
+        "nearest_rank": "K",
+        "rank_margin": -0.00869,
         "nearest_suit": "D",
-        "suit_margin": -0.004311
+        "suit_margin": -0.004755
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8C/20260403_181810_8C_warped.jpg",
-        "outlier_score": 0.085482,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8C/20260409_202548_8C_warped.jpg",
+        "outlier_score": 0.088647,
         "nearest_card_label": "6C",
-        "card_margin": -0.028247,
+        "card_margin": -0.020294,
         "nearest_rank": "K",
-        "rank_margin": -0.000497,
+        "rank_margin": -0.002501,
         "nearest_suit": "D",
-        "suit_margin": -0.00639
+        "suit_margin": -0.002672
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8C/20260403_012430_8C_warped.jpg",
-        "outlier_score": 0.091032,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8C/20260403_181810_8C_warped.jpg",
+        "outlier_score": 0.080009,
         "nearest_card_label": "6C",
-        "card_margin": -0.025616,
+        "card_margin": -0.019386,
         "nearest_rank": "K",
-        "rank_margin": -0.004256,
-        "nearest_suit": "S",
-        "suit_margin": -0.00592
+        "rank_margin": 0.001028,
+        "nearest_suit": "D",
+        "suit_margin": -0.003709
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8C/20260403_181849_8C_warped.jpg",
-        "outlier_score": 0.087296,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8C/20260721_115056_8C_warped.jpg",
+        "outlier_score": 0.083987,
         "nearest_card_label": "6C",
-        "card_margin": -0.025463,
+        "card_margin": -0.01929,
         "nearest_rank": "K",
-        "rank_margin": -0.004149,
+        "rank_margin": -0.002888,
         "nearest_suit": "S",
-        "suit_margin": -0.005958
+        "suit_margin": -0.006568
       },
       {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8C/20260407_002546_8C_warped.jpg",
-        "outlier_score": 0.080932,
+        "path": "/home/avgustine/card_detector/cv/card_dataset_tool/dataset/warped/8C/20260403_181849_8C_warped.jpg",
+        "outlier_score": 0.082419,
         "nearest_card_label": "6C",
-        "card_margin": -0.022878,
-        "nearest_rank": "10",
-        "rank_margin": 0.000306,
+        "card_margin": -0.019068,
+        "nearest_rank": "K",
+        "rank_margin": -0.002783,
         "nearest_suit": "S",
-        "suit_margin": -0.004223
-      },
-      {
-        "path": "/home/avgustine/home_fortress/cv/card_dataset_tool/dataset/warped/8C/20260407_002611_8C_warped.jpg",
-        "outlier_score": 0.079749,
-        "nearest_card_label": "6C",
-        "card_margin": -0.02218,
-        "nearest_rank": "10",
-        "rank_margin": 0.003133,
-        "nearest_suit": "S",
-        "suit_margin": -0.002907
+        "suit_margin": -0.002875
       }
     ]
   }
