@@ -143,6 +143,13 @@ cd /home/avgustine/card_detector
 /home/avgustine/home_fortress/.venv-capture/bin/python cv/card_dataset_tool/identify_card_once.py
 ```
 
+Four-card order recognizer:
+
+```bash
+cd /home/avgustine/card_detector
+/home/avgustine/home_fortress/.venv-capture/bin/python cv/card_dataset_tool/identify_card_chain.py --count 4
+```
+
 Controls:
 
 - type expected card label

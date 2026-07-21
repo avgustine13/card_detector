@@ -76,6 +76,12 @@ Identify the single card currently under the Pi camera:
 python cv/card_dataset_tool/identify_card_once.py
 ```
 
+Recognize four cards in placement order:
+
+```powershell
+python cv/card_dataset_tool/identify_card_chain.py --count 4
+```
+
 Inspect weak samples and confusion clusters:
 
 ```powershell
