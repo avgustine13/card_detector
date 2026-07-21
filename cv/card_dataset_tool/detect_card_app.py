@@ -581,7 +581,7 @@ def main() -> int:
 
     print(f"Using backend: {selected_backend}")
     print(f"Device: {device}")
-    print("Controls: type actual label, '-' clear, backspace edit, s save, g debug, Esc quit")
+    print("Controls: type actual label, '-' clear, backspace edit, space save, g debug, Esc quit")
 
     debug_enabled = args.debug
     expected_label = normalize_label(args.expected_label)
@@ -611,7 +611,7 @@ def main() -> int:
                 if not debug_enabled:
                     cv2.destroyWindow("card_detection_warped")
                 continue
-            if key == ord("s"):
+            if key == 32:
                 captioned_path, raw_path = save_snapshot(Path(args.snapshot_dir), preview, expected_label, label, frame)
                 append_detection_log(
                     Path(args.log_path),

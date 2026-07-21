@@ -76,8 +76,8 @@ Run the live detection display with full-name captions:
 python cv/card_dataset_tool/detect_card_app.py --backend rpicam --debug
 ```
 
-It overlays the card contour and a caption such as `King of Diamonds`. Press `s` to save a captioned frame and `Esc` to quit.
-Type the actual card label before pressing `s` to save matched debug files and a CSV row, for example `actual_7H_pred_10H`.
+It overlays the card contour and a caption such as `King of Diamonds`. Press `space` to save a captioned frame and `Esc` to quit.
+Type the actual card label before pressing `space` to save matched debug files and a CSV row, for example `actual_7H_pred_10H`.
 
 Identify the single card currently under the Pi camera:
 

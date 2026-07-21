@@ -169,7 +169,7 @@ cd /home/avgustine/card_detector
 /home/avgustine/home_fortress/.venv-capture/bin/python cv/card_dataset_tool/detect_card_app.py --backend rpicam --debug
 ```
 
-This displays the detected card contour with a caption like `King of Diamonds`; press `s` to save a captioned frame.
+This displays the detected card contour with a caption like `King of Diamonds`; press `space` to save a captioned frame.
 Type the actual card label before saving. Saved detection files include both actual and predicted labels, for example `actual_7H_pred_10H`, and observations are appended to `cv/card_dataset_tool/detection_captures/detection_log.csv`.
 
 Four-card order recognizer:
