@@ -128,6 +128,13 @@ cd /home/avgustine/card_detector
 /home/avgustine/home_fortress/.venv-capture/bin/python cv/card_dataset_tool/live_patch_cnn.py --backend rpicam --debug
 ```
 
+One-shot current-card identifier:
+
+```bash
+cd /home/avgustine/card_detector
+/home/avgustine/home_fortress/.venv-capture/bin/python cv/card_dataset_tool/identify_card_once.py
+```
+
 Controls:
 
 - type expected card label

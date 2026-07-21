@@ -70,6 +70,12 @@ python cv/card_dataset_tool/live_patch_cnn.py --backend rpicam --debug
 
 In the live tester, type the expected card label, press `space` to log the current prediction, press `s` to save raw/warped images with the log entry, and press `Esc` to quit.
 
+Identify the single card currently under the Pi camera:
+
+```powershell
+python cv/card_dataset_tool/identify_card_once.py
+```
+
 Inspect weak samples and confusion clusters:
 
 ```powershell
