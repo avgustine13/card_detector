@@ -70,6 +70,14 @@ python cv/card_dataset_tool/live_patch_cnn.py --backend rpicam --debug
 
 In the live tester, type the expected card label, press `space` to log the current prediction, press `s` to save raw/warped images with the log entry, and press `Esc` to quit.
 
+Run the live detection display with full-name captions:
+
+```powershell
+python cv/card_dataset_tool/detect_card_app.py --backend rpicam --debug
+```
+
+It overlays the card contour and a caption such as `King of Diamonds`. Press `s` to save a captioned frame and `Esc` to quit.
+
 Identify the single card currently under the Pi camera:
 
 ```powershell
@@ -90,6 +98,14 @@ By default, frame difference is only used as the trigger; recognition still uses
 ```powershell
 python cv/card_dataset_tool/identify_card_diff_chain.py --count 4
 ```
+
+For gameplay-style overlap where the full card outline is partly covered, use the index-corner chain recognizer. It waits for frame change, finds changed rank/suit ink groups, classifies the best visible index corner, then refreshes the baseline:
+
+```powershell
+python cv/card_dataset_tool/identify_card_index_chain.py --count 4
+```
+
+This mode requires at least one rank/suit index corner of each newly placed card to remain visible.
 
 Inspect weak samples and confusion clusters:
 

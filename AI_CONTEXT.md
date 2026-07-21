@@ -162,6 +162,15 @@ cd /home/avgustine/card_detector
 /home/avgustine/home_fortress/.venv-capture/bin/python cv/card_dataset_tool/identify_card_once.py
 ```
 
+Live full-name captioned detector:
+
+```bash
+cd /home/avgustine/card_detector
+/home/avgustine/home_fortress/.venv-capture/bin/python cv/card_dataset_tool/detect_card_app.py --backend rpicam --debug
+```
+
+This displays the detected card contour with a caption like `King of Diamonds`; press `s` to save a captioned frame.
+
 Four-card order recognizer:
 
 ```bash
@@ -178,6 +187,15 @@ Overlapping-card chain behavior:
 
 For real gameplay-style overlapping, prefer `identify_card_diff_chain.py`. It captures the current pile as a baseline, waits for a newly placed card to change the frame, recognizes the current full-frame top-card contour by default, then refreshes the baseline before waiting for the next card. The older changed-region candidate mode can classify partial exposed regions and is less reliable for normal overlapping play.
 
+When the full top-card outline is no longer visible because cards are overlapped naturally, use the index-corner chain recognizer:
+
+```bash
+cd /home/avgustine/card_detector
+/home/avgustine/home_fortress/.venv-capture/bin/python cv/card_dataset_tool/identify_card_index_chain.py --count 4
+```
+
+This path uses frame difference only to find newly changed ink, then classifies the best visible rank/suit index corner by reusing the same saved rank and suit CNN checkpoints. It requires at least one index corner of each newly placed card to remain visible.
+
 Controls:
 
 - type expected card label
@@ -193,12 +211,14 @@ Controls:
 - Added offline dataset evaluation modes
 - Added separate rank and suit CNN training/evaluation scripts
 - Added live one-card CNN recognition tester with manual observation logging
+- Added live full-name captioned detection display
 - Extracted shared patch preprocessing into `cv/card_dataset_tool/patch_preprocess.py`
 - Changed patch representation from hard-thresholded binary to grayscale plus histogram equalization
 - Rotated warped cards to the corner with the strongest index ink before ROI extraction
 - Widened corner ROIs toward the card edge to capture the actual rank and suit indices more reliably
 - Added dataset triage and quarantine workflows
 - Added guarded multi-seed training and checkpoint promotion
+- Added an index-corner chain recognizer for overlapped piles where the full card contour is partly hidden
 
 ## Main Remaining Error Clusters
 
