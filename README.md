@@ -62,6 +62,14 @@ Evaluate saved CNN checkpoints:
 python cv/card_dataset_tool/eval_patch_cnn.py --test-per-label 3
 ```
 
+Run live one-card CNN recognition:
+
+```powershell
+python cv/card_dataset_tool/live_patch_cnn.py --backend rpicam --debug
+```
+
+In the live tester, type the expected card label, press `space` to log the current prediction, press `s` to save raw/warped images with the log entry, and press `Esc` to quit.
+
 Inspect weak samples and confusion clusters:
 
 ```powershell
@@ -107,7 +115,7 @@ Note: the model checkpoints and `metrics.json` were not timestamp-updated by tha
 
 ## Next Improvement Loop
 
-1. Check why the July 21 training run did not update `rank_cnn.pt`, `suit_cnn.pt`, or `metrics.json`.
-2. Re-run evaluation against the intended promoted checkpoints.
-3. Promote checkpoints only if `card_accuracy` remains above `0.8519`.
-4. Inspect the remaining mistakes before another capture pass.
+1. Run live one-card CNN recognition with `cv/card_dataset_tool/live_patch_cnn.py`.
+2. Log repeatable live misses, especially `10D`, `10H`, `6C`, `7H`, `8D`, and `8H`.
+3. Save raw/warped images only for repeatable misses or unstable warps.
+4. Re-run training/eval after enough real misses are collected.

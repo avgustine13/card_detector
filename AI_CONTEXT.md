@@ -121,11 +121,28 @@ Live testing should focus first on the latest remaining eval mistakes:
 - `8D`
 - `8H`
 
+Live tester:
+
+```bash
+cd /home/avgustine/card_detector
+/home/avgustine/home_fortress/.venv-capture/bin/python cv/card_dataset_tool/live_patch_cnn.py --backend rpicam --debug
+```
+
+Controls:
+
+- type expected card label
+- `space`: log current prediction to `cv/card_dataset_tool/models/live_test_log.csv`
+- `s`: log and save raw/warped images under `cv/card_dataset_tool/live_captures/`
+- `g`: toggle warped debug window
+- `-`: clear expected label
+- `Esc`: quit
+
 ## Landed Implementation Changes
 
 - Added the labeled capture tool and dataset metadata flow
 - Added offline dataset evaluation modes
 - Added separate rank and suit CNN training/evaluation scripts
+- Added live one-card CNN recognition tester with manual observation logging
 - Extracted shared patch preprocessing into `cv/card_dataset_tool/patch_preprocess.py`
 - Changed patch representation from hard-thresholded binary to grayscale plus histogram equalization
 - Rotated warped cards to the corner with the strongest index ink before ROI extraction
