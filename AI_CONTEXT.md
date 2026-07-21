@@ -133,6 +133,18 @@ Live observations from July 21, 2026:
 - Chain session `20260721_155645`: position 4 predicted `KH`, user confirmed actual `KS`; record as `KS -> KH`.
 - Hearts/spades separation is now a confirmed live issue, especially around `AH`, `QH`, `KS`, and `KH`.
 
+Color-aware suit model experiment:
+
+- Added a wider suit ROI that keeps more of the lower suit symbol/stem.
+- Suit preprocessing now uses three channels: equalized grayscale shape, red-symbol mask, and black-symbol mask.
+- The first hard red/black prior was too brittle and was removed.
+- New promoted Pi checkpoint after retraining with seeds `42,7,13,21`:
+  - rank accuracy: `0.9167`
+  - suit accuracy: `0.9630`
+  - full-card accuracy: `0.8981`
+  - seed: `42`
+- This is internally consistent with the new preprocessing, but it is lower than the earlier `0.944` offline saved-checkpoint eval. Treat it as a live-test candidate, not a proven improvement.
+
 Live tester:
 
 ```bash
