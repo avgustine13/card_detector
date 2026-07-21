@@ -121,13 +121,62 @@ def classify_red_suit_shape(oriented_warped) -> str:
     return ""
 
 
+def classify_black_suit_shape(oriented_warped) -> str:
+    x, y, width, height = SUIT_ROI
+    suit_roi = oriented_warped[y : y + height, x : x + width]
+    hsv = cv2.cvtColor(suit_roi, cv2.COLOR_BGR2HSV)
+    _hue, saturation, value = cv2.split(hsv)
+    black_mask = ((value <= 145) & (saturation <= 135)).astype(np.uint8) * 255
+    black_mask = cv2.morphologyEx(black_mask, cv2.MORPH_OPEN, np.ones((3, 3), dtype=np.uint8), iterations=1)
+    black_mask = cv2.morphologyEx(black_mask, cv2.MORPH_CLOSE, np.ones((5, 5), dtype=np.uint8), iterations=1)
+    contours, _ = cv2.findContours(black_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours = [contour for contour in contours if cv2.contourArea(contour) >= 80]
+    if not contours:
+        return ""
+
+    contour = max(contours, key=cv2.contourArea)
+    area = cv2.contourArea(contour)
+    perimeter = cv2.arcLength(contour, True)
+    if perimeter <= 0:
+        return ""
+
+    hull_area = cv2.contourArea(cv2.convexHull(contour))
+    if hull_area <= 0:
+        return ""
+
+    x0, y0, w0, h0 = cv2.boundingRect(contour)
+    lower_half = contour[:, 0, 1] > (y0 + h0 * 0.58)
+    lower_width = 0
+    if np.any(lower_half):
+        lower_points = contour[:, 0, :][lower_half]
+        lower_width = int(lower_points[:, 0].max() - lower_points[:, 0].min() + 1)
+    solidity = area / hull_area
+    lower_width_ratio = lower_width / max(1.0, float(w0))
+
+    # Spades usually have one broad upper body narrowing into a stem.
+    # Clubs keep substantial width in the lower half because of the lower lobe.
+    if lower_width_ratio <= 0.55 and solidity >= 0.78:
+        return "S"
+    if lower_width_ratio > 0.55 or solidity < 0.78:
+        return "C"
+    return ""
+
+
 def apply_shape_suit_correction(label: str, oriented_warped: np.ndarray) -> tuple[str, str]:
-    if len(label) < 2 or label[-1] not in ("D", "H"):
+    if len(label) < 2:
         return label, ""
 
-    shape_suit = classify_red_suit_shape(oriented_warped)
-    if label[-1] == "H" and shape_suit == "D":
-        return f"{label[:-1]}{shape_suit}", f"shape {label[-1]}->{shape_suit}"
+    color_group = suit_color_group(oriented_warped)
+    if color_group == "red":
+        shape_suit = classify_red_suit_shape(oriented_warped)
+        if label[-1] == "H" and shape_suit == "D":
+            return f"{label[:-1]}{shape_suit}", f"shape {label[-1]}->{shape_suit}"
+        if label[-1] in ("C", "S") and shape_suit in ("D", "H"):
+            return f"{label[:-1]}{shape_suit}", f"color {label[-1]}->{shape_suit}"
+    if color_group == "black":
+        shape_suit = classify_black_suit_shape(oriented_warped)
+        if label[-1] in ("D", "H") and shape_suit in ("C", "S"):
+            return f"{label[:-1]}{shape_suit}", f"color {label[-1]}->{shape_suit}"
     return label, ""
 
 
@@ -152,9 +201,23 @@ def suit_color_score(label: str, color_group: str) -> float:
         return 1.0
     suit = label[-1]
     if suit in ("D", "H"):
-        return 1.0 if color_group == "red" else 0.45
+        return 1.0 if color_group == "red" else 0.08
     if suit in ("C", "S"):
-        return 1.0 if color_group == "black" else 0.45
+        return 1.0 if color_group == "black" else 0.08
+    return 1.0
+
+
+def index_ink_score(oriented_warped: np.ndarray) -> float:
+    rank_roi = extract_roi(oriented_warped, "rank")
+    suit_roi = extract_roi(oriented_warped, "suit")
+    rank_gray = cv2.cvtColor(rank_roi, cv2.COLOR_BGR2GRAY)
+    suit_gray = cv2.cvtColor(suit_roi, cv2.COLOR_BGR2GRAY)
+    rank_ink = int((rank_gray < 175).sum())
+    suit_ink = int((suit_gray < 175).sum())
+    if rank_ink < 70 or suit_ink < 50:
+        return 0.20
+    if rank_ink > 7800 or suit_ink > 9000:
+        return 0.35
     return 1.0
 
 
@@ -178,6 +241,7 @@ def predict_card_best_orientation(
             min(rank_confidence, suit_confidence)
             * ((rank_confidence + suit_confidence) / 2.0)
             * suit_color_score(label, suit_color_group(oriented))
+            * index_ink_score(oriented)
         )
         candidate = (score, rank_confidence, suit_confidence, label, oriented, rotation)
         if best is None or candidate[0] > best[0]:
