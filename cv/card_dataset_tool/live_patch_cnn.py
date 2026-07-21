@@ -50,6 +50,8 @@ def parse_args() -> argparse.Namespace:
         default=str(Path(__file__).with_name("live_captures")),
         help="Directory for saved raw/warped frames from logged observations.",
     )
+    parser.add_argument("--expected-label", default="", help="Expected card label for one-shot image testing.")
+    parser.add_argument("--image-path", default="", help="Run one prediction on an existing image and exit.")
     parser.add_argument("--save-on-log", action="store_true", help="Save raw and warped images when logging.")
     parser.add_argument("--debug", action="store_true", help="Show warped debug window.")
     return parser.parse_args()
@@ -176,6 +178,57 @@ def draw_overlay(
     return canvas
 
 
+def run_image_once(
+    image_path: Path,
+    expected_label: str,
+    min_area: int,
+    rank_model: torch.nn.Module,
+    rank_id_to_label: dict[int, str],
+    suit_model: torch.nn.Module,
+    suit_id_to_label: dict[int, str],
+    device: torch.device,
+    log_path: Path,
+    captures_dir: Path,
+    save_on_log: bool,
+) -> int:
+    frame = cv2.imread(str(image_path))
+    if frame is None:
+        print(f"Failed to read image: {image_path}")
+        return 1
+
+    quad, _contour, area = find_card_quad(frame, min_area)
+    if quad is None:
+        print("No card found.")
+        return 2
+
+    warped = warp_card(frame, quad)
+    rank, rank_confidence, suit, suit_confidence, predicted_label = predict_card(
+        warped, rank_model, rank_id_to_label, suit_model, suit_id_to_label, device
+    )
+    del rank, suit
+
+    raw_path = None
+    warped_path = None
+    if save_on_log:
+        raw_path, warped_path = save_observation(captures_dir, expected_label, predicted_label, frame, warped)
+
+    append_log(log_path, expected_label, predicted_label, rank_confidence, suit_confidence, raw_path, warped_path)
+
+    print(f"Image: {image_path}")
+    print(f"Expected: {expected_label or '-'}")
+    print(f"Predicted: {predicted_label}")
+    if is_valid_label(expected_label):
+        print(f"Match: {expected_label == predicted_label}")
+    print(f"Rank confidence: {rank_confidence:.4f}")
+    print(f"Suit confidence: {suit_confidence:.4f}")
+    print(f"Contour area: {area:.1f}")
+    if raw_path is not None:
+        print(f"Saved raw: {raw_path}")
+        print(f"Saved warped: {warped_path}")
+    print(f"Logged: {log_path}")
+    return 0
+
+
 def main() -> int:
     args = parse_args()
     device = resolve_device(args.device)
@@ -184,6 +237,24 @@ def main() -> int:
     if rank_target != "rank" or suit_target != "suit":
         print("Checkpoint targets do not match expected rank/suit models.")
         return 1
+
+    log_path = Path(args.log_path)
+    captures_dir = Path(args.captures_dir)
+    expected_label = normalize_label(args.expected_label)
+    if args.image_path:
+        return run_image_once(
+            Path(args.image_path),
+            expected_label,
+            args.min_area,
+            rank_model,
+            rank_id_to_label,
+            suit_model,
+            suit_id_to_label,
+            device,
+            log_path,
+            captures_dir,
+            args.save_on_log,
+        )
 
     try:
         cap, selected_backend = open_camera(
@@ -203,10 +274,7 @@ def main() -> int:
     print(f"Device: {device}")
     print("Controls: type expected label, '-' clear, backspace edit, space log, s save+log, g debug, Esc quit")
 
-    expected_label = ""
     debug_enabled = args.debug
-    log_path = Path(args.log_path)
-    captures_dir = Path(args.captures_dir)
 
     try:
         while True:
