@@ -169,8 +169,6 @@ def apply_shape_suit_correction(label: str, oriented_warped: np.ndarray) -> tupl
     color_group = suit_color_group(oriented_warped)
     if color_group == "red":
         shape_suit = classify_red_suit_shape(oriented_warped)
-        if label[-1] == "H" and shape_suit == "D":
-            return f"{label[:-1]}{shape_suit}", f"shape {label[-1]}->{shape_suit}"
         if label[-1] in ("C", "S") and shape_suit in ("D", "H"):
             return f"{label[:-1]}{shape_suit}", f"color {label[-1]}->{shape_suit}"
     if color_group == "black":
@@ -301,6 +299,52 @@ def predict_card_best_orientation(
     return label, rank_confidence, suit_confidence, oriented, rotation
 
 
+def number_pip_mask(oriented_warped: np.ndarray, suit: str) -> np.ndarray:
+    inner = oriented_warped[55:465, 45:315]
+    hsv = cv2.cvtColor(inner, cv2.COLOR_BGR2HSV)
+    hue, saturation, value = cv2.split(hsv)
+    if suit in ("D", "H"):
+        mask = (((hue <= 12) | (hue >= 165)) & (saturation >= 45) & (value <= 245)).astype(np.uint8) * 255
+    else:
+        mask = ((value <= 145) & (saturation <= 135)).astype(np.uint8) * 255
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, np.ones((3, 3), dtype=np.uint8), iterations=1)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((7, 7), dtype=np.uint8), iterations=1)
+    return mask
+
+
+def estimate_number_rank_by_pips(oriented_warped: np.ndarray, suit: str) -> str:
+    mask = number_pip_mask(oriented_warped, suit)
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    large = []
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area < 120 or area > 4500:
+            continue
+        x, y, width, height = cv2.boundingRect(contour)
+        if width < 8 or height < 8:
+            continue
+        large.append(contour)
+
+    count = len(large)
+    if 2 <= count <= 10:
+        return str(count)
+    return ""
+
+
+def apply_number_rank_correction(label: str, oriented_warped: np.ndarray) -> tuple[str, str]:
+    if len(label) < 2:
+        return label, ""
+    rank = label[:-1]
+    suit = label[-1]
+    if rank not in {"2", "3", "4", "5", "6", "7", "8", "9", "10"}:
+        return label, ""
+
+    pip_rank = estimate_number_rank_by_pips(oriented_warped, suit)
+    if pip_rank and pip_rank != rank:
+        return f"{pip_rank}{suit}", f"pips {rank}->{pip_rank}"
+    return label, ""
+
+
 def draw_text_box(frame, lines: list[str], origin: tuple[int, int], color: tuple[int, int, int]) -> None:
     x, y = origin
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -373,7 +417,8 @@ def detect_frame(frame, min_area: int, rank_model, rank_id_to_label, suit_model,
         warped, rank_model, rank_id_to_label, suit_model, suit_id_to_label, device
     )
     corrected_label, correction = apply_shape_suit_correction(label, oriented)
-    status = correction or f"detected rot={rotation * 90}"
+    corrected_label, rank_correction = apply_number_rank_correction(corrected_label, oriented)
+    status = rank_correction or correction or f"detected rot={rotation * 90}"
     return corrected_label, rank_confidence, suit_confidence, quad, contour, oriented, area, status
 
 
