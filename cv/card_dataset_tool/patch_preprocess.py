@@ -34,7 +34,13 @@ def orient_card_to_corner(image: np.ndarray) -> np.ndarray:
 def normalize_patch_image(patch: np.ndarray, target: str) -> np.ndarray:
     scaled = cv2.resize(patch, PATCH_SIZE, interpolation=cv2.INTER_AREA)
     if target == "suit":
-        return scaled
+        gray = cv2.cvtColor(scaled, cv2.COLOR_BGR2GRAY)
+        gray = cv2.equalizeHist(gray)
+        hsv = cv2.cvtColor(scaled, cv2.COLOR_BGR2HSV)
+        hue, saturation, value = cv2.split(hsv)
+        red_mask = (((hue <= 12) | (hue >= 165)) & (saturation >= 45) & (value <= 245)).astype(np.uint8) * 255
+        black_mask = ((value <= 135) & (saturation <= 105)).astype(np.uint8) * 255
+        return np.dstack([gray, red_mask, black_mask])
 
     gray = cv2.cvtColor(scaled, cv2.COLOR_BGR2GRAY)
     return cv2.equalizeHist(gray)
@@ -58,18 +64,18 @@ def suit_color_group(patch: np.ndarray) -> str:
     if patch.ndim != 3:
         return "unknown"
 
-    b, g, r = cv2.split(patch)
-    ink_mask = np.minimum.reduce([b, g, r]) < 215
-    if not np.any(ink_mask):
+    if patch.shape[2] >= 3:
+        red_count = int((patch[:, :, 1] > 0).sum())
+        black_count = int((patch[:, :, 2] > 0).sum())
+    else:
+        red_count = 0
+        black_count = 0
+
+    if red_count < 20 and black_count < 20:
         return "unknown"
 
-    red_pixels = ink_mask & (r > 80) & ((r.astype(np.int16) - np.maximum(b, g).astype(np.int16)) > 25)
-    dark_pixels = ink_mask & (np.maximum.reduce([b, g, r]) < 120)
-    red_ratio = float(red_pixels.sum()) / float(ink_mask.sum())
-    dark_ratio = float(dark_pixels.sum()) / float(ink_mask.sum())
-
-    if red_ratio > 0.18:
+    if red_count >= max(35, int(black_count * 0.35)):
         return "red"
-    if dark_ratio > 0.35:
+    if black_count >= 35:
         return "black"
     return "unknown"
