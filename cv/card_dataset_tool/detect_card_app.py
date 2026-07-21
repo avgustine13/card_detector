@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 import cv2
+import numpy as np
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
@@ -15,7 +16,7 @@ from cv.card_common.camera import CameraOptions, open_camera
 from cv.card_dataset_tool.app import find_card_quad, warp_card
 from cv.card_dataset_tool.cnn_common import load_checkpoint
 from cv.card_dataset_tool.live_patch_cnn import predict_card, resolve_device
-from cv.card_dataset_tool.patch_preprocess import orient_card_to_corner
+from cv.card_dataset_tool.patch_preprocess import SUIT_ROI, orient_card_to_corner
 
 
 RANK_NAMES = {
@@ -82,6 +83,55 @@ def card_full_name(label: str) -> str:
     return f"{rank_name} of {suit_name}"
 
 
+def classify_red_suit_shape(oriented_warped) -> str:
+    x, y, width, height = SUIT_ROI
+    suit_roi = oriented_warped[y : y + height, x : x + width]
+    hsv = cv2.cvtColor(suit_roi, cv2.COLOR_BGR2HSV)
+    hue, saturation, value = cv2.split(hsv)
+    red_mask = (((hue <= 12) | (hue >= 165)) & (saturation >= 45) & (value <= 245)).astype(np.uint8) * 255
+    red_mask = cv2.morphologyEx(red_mask, cv2.MORPH_OPEN, np.ones((3, 3), dtype=np.uint8), iterations=1)
+    red_mask = cv2.morphologyEx(red_mask, cv2.MORPH_CLOSE, np.ones((5, 5), dtype=np.uint8), iterations=1)
+    contours, _ = cv2.findContours(red_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours = [contour for contour in contours if cv2.contourArea(contour) >= 80]
+    if not contours:
+        return ""
+
+    contour = max(contours, key=cv2.contourArea)
+    area = cv2.contourArea(contour)
+    perimeter = cv2.arcLength(contour, True)
+    if perimeter <= 0:
+        return ""
+
+    hull_area = cv2.contourArea(cv2.convexHull(contour))
+    if hull_area <= 0:
+        return ""
+
+    x0, y0, w0, h0 = cv2.boundingRect(contour)
+    extent = area / float(w0 * h0)
+    solidity = area / hull_area
+    circularity = (4.0 * np.pi * area) / (perimeter * perimeter)
+    approx = cv2.approxPolyDP(contour, 0.045 * perimeter, True)
+
+    # Diamonds are compact, convex, and angular. Hearts have a top notch/lobes
+    # and are usually less solid in the same corner ROI.
+    if solidity >= 0.92 and extent >= 0.42 and circularity <= 0.78 and len(approx) <= 8:
+        return "D"
+    if solidity < 0.92 or circularity > 0.72:
+        return "H"
+    return ""
+
+
+def apply_shape_suit_correction(label: str, warped: np.ndarray) -> tuple[str, str]:
+    if len(label) < 2 or label[-1] not in ("D", "H"):
+        return label, ""
+
+    oriented = orient_card_to_corner(warped)
+    shape_suit = classify_red_suit_shape(oriented)
+    if shape_suit and shape_suit != label[-1]:
+        return f"{label[:-1]}{shape_suit}", f"shape {label[-1]}->{shape_suit}"
+    return label, ""
+
+
 def draw_text_box(frame, lines: list[str], origin: tuple[int, int], color: tuple[int, int, int]) -> None:
     x, y = origin
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -109,6 +159,7 @@ def draw_detection_overlay(
     rank_confidence: float,
     suit_confidence: float,
     status: str,
+    correction: str,
 ):
     canvas = frame.copy()
     color = (0, 220, 0) if label else (0, 200, 255)
@@ -127,6 +178,8 @@ def draw_detection_overlay(
             card_full_name(label),
             f"{label}  rank {rank_confidence:.2f}  suit {suit_confidence:.2f}",
         ]
+        if correction:
+            lines.append(correction)
     else:
         lines = [status]
     draw_text_box(canvas, lines, origin, color)
@@ -150,7 +203,8 @@ def detect_frame(frame, min_area: int, rank_model, rank_id_to_label, suit_model,
     _rank, rank_confidence, _suit, suit_confidence, label = predict_card(
         warped, rank_model, rank_id_to_label, suit_model, suit_id_to_label, device
     )
-    return label, rank_confidence, suit_confidence, quad, contour, warped, area, "detected"
+    corrected_label, correction = apply_shape_suit_correction(label, warped)
+    return corrected_label, rank_confidence, suit_confidence, quad, contour, warped, area, correction or "detected"
 
 
 def save_snapshot(snapshot_dir: Path, frame, label: str) -> Path:
@@ -172,7 +226,8 @@ def run_image_once(args: argparse.Namespace, rank_model, rank_id_to_label, suit_
     label, rank_confidence, suit_confidence, quad, contour, warped, _area, status = detect_frame(
         frame, args.min_area, rank_model, rank_id_to_label, suit_model, suit_id_to_label, device
     )
-    captioned = draw_detection_overlay(frame, quad, contour, label, rank_confidence, suit_confidence, status)
+    correction = status if status.startswith("shape ") else ""
+    captioned = draw_detection_overlay(frame, quad, contour, label, rank_confidence, suit_confidence, status, correction)
     output_path = Path(args.save_image) if args.save_image else save_snapshot(Path(args.snapshot_dir), captioned, label)
     cv2.imwrite(str(output_path), captioned)
 
@@ -233,7 +288,10 @@ def main() -> int:
             label, rank_confidence, suit_confidence, quad, contour, warped, _area, status = detect_frame(
                 frame, args.min_area, rank_model, rank_id_to_label, suit_model, suit_id_to_label, device
             )
-            preview = draw_detection_overlay(frame, quad, contour, label, rank_confidence, suit_confidence, status)
+            correction = status if status.startswith("shape ") else ""
+            preview = draw_detection_overlay(
+                frame, quad, contour, label, rank_confidence, suit_confidence, status, correction
+            )
             cv2.imshow("card_detection", preview)
             if debug_enabled and warped is not None:
                 cv2.imshow("card_detection_warped", orient_card_to_corner(warped))
