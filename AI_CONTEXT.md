@@ -132,6 +132,9 @@ Live observations from July 21, 2026:
 - Chain session `20260721_155645`: position 3 predicted `KS`, user confirmed actual `QH`; record as `QH -> KS`.
 - Chain session `20260721_155645`: position 4 predicted `KH`, user confirmed actual `KS`; record as `KS -> KH`.
 - Hearts/spades separation is now a confirmed live issue, especially around `AH`, `QH`, `KS`, and `KH`.
+- Chain session `20260721_171929`: accepted order was `QC`, `6D`, `KH`, `AD`.
+- User confirmed position 3 was actually `KD`, so record `KD -> KH`.
+- The same session accepted `6D`, but before stabilizing it flickered through `9D`, `KD`, and `7D`; rank instability around `6D` is still visible live.
 
 Color-aware suit model experiment:
 
