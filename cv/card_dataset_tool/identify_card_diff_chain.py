@@ -36,6 +36,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--min-confidence", type=float, default=0.55, help="Minimum rank and suit confidence to accept.")
     parser.add_argument("--min-change-area", type=int, default=2500, help="Minimum changed-pixel area to trigger recognition.")
     parser.add_argument("--diff-threshold", type=int, default=22, help="Frame difference threshold.")
+    parser.add_argument(
+        "--candidate-source",
+        choices=("full", "changed"),
+        default="full",
+        help="Use frame difference only as a trigger, then recognize the full-frame top contour, or recognize inside the changed region.",
+    )
     parser.add_argument("--device", default="cpu", help="cpu, cuda, or auto.")
     parser.add_argument(
         "--rank-model",
@@ -96,16 +102,25 @@ def mask_change_area(mask: np.ndarray) -> int:
     return int((mask > 0).sum())
 
 
-def find_changed_card_quad(frame: np.ndarray, mask: np.ndarray, min_area: int) -> tuple[np.ndarray | None, float]:
+def find_changed_card_quad(
+    frame: np.ndarray,
+    mask: np.ndarray,
+    min_area: int,
+    candidate_source: str,
+) -> tuple[np.ndarray | None, float, str]:
+    if candidate_source == "full":
+        quad, _contour, area = find_card_quad(frame, min_area)
+        if quad is not None:
+            return quad, area, "full"
+
     masked = frame.copy()
     masked[mask == 0] = 255
     quad, _contour, area = find_card_quad(masked, min_area)
     if quad is not None:
-        return quad, area
+        return quad, area, "changed"
 
-    # Fallback: try the current full frame. This still works when the new top card has the dominant outline.
     quad, _contour, area = find_card_quad(frame, min_area)
-    return quad, area
+    return quad, area, "full"
 
 
 def append_log(log_path: Path, row: list[str]) -> None:
@@ -123,6 +138,7 @@ def append_log(log_path: Path, row: list[str]) -> None:
                     "suit_confidence",
                     "contour_area",
                     "change_area",
+                    "candidate_source",
                     "raw_path",
                     "warped_path",
                     "diff_path",
@@ -193,7 +209,12 @@ def main() -> int:
             time.sleep(args.interval)
             continue
 
-        quad, contour_area = find_changed_card_quad(frame, mask, args.min_area)
+        quad, contour_area, candidate_source = find_changed_card_quad(
+            frame,
+            mask,
+            args.min_area,
+            args.candidate_source,
+        )
         if quad is None:
             print(f"change seen but no card area={change_area}")
             candidate = ""
@@ -215,7 +236,8 @@ def main() -> int:
 
         print(
             f"seen={predicted} rank={rank_confidence:.3f} suit={suit_confidence:.3f} "
-            f"contour={contour_area:.0f} change={change_area} stable={candidate_count}/{args.stable_reads}"
+            f"contour={contour_area:.0f} change={change_area} source={candidate_source} "
+            f"stable={candidate_count}/{args.stable_reads}"
         )
 
         if args.keep_attempts:
@@ -240,6 +262,7 @@ def main() -> int:
                     f"{suit_confidence:.4f}",
                     f"{contour_area:.1f}",
                     str(change_area),
+                    candidate_source,
                     str(raw_path),
                     str(warped_path),
                     str(diff_path),
