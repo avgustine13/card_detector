@@ -128,6 +128,10 @@ Live observations from July 21, 2026:
 - One current-card run predicted `QC` with rank confidence `0.9733`, suit confidence `0.9999`.
 - `AC` predicted as `AC` with rank confidence `1.0000`, suit confidence `0.7039`; user noted it had previously been recognized as `AS`.
 - Treat `AC` versus `AS` / clubs versus spades as an active live ambiguity to retest.
+- Chain session `20260721_154843`: position 4 predicted `AS`, user confirmed actual `AH`; record as `AH -> AS`.
+- Chain session `20260721_155645`: position 3 predicted `KS`, user confirmed actual `QH`; record as `QH -> KS`.
+- Chain session `20260721_155645`: position 4 predicted `KH`, user confirmed actual `KS`; record as `KS -> KH`.
+- Hearts/spades separation is now a confirmed live issue, especially around `AH`, `QH`, `KS`, and `KH`.
 
 Live tester:
 
