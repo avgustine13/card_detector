@@ -170,18 +170,10 @@ def classify_black_suit_shape(oriented_warped) -> str:
 
 
 def apply_shape_suit_correction(label: str, oriented_warped: np.ndarray) -> tuple[str, str]:
-    if len(label) < 2:
-        return label, ""
-
-    color_group = suit_color_group(oriented_warped)
-    if color_group == "red":
-        shape_suit = classify_red_suit_shape(oriented_warped)
-        if label[-1] in ("C", "S") and shape_suit in ("D", "H"):
-            return f"{label[:-1]}{shape_suit}", f"color {label[-1]}->{shape_suit}"
-    if color_group == "black":
-        shape_suit = classify_black_suit_shape(oriented_warped)
-        if label[-1] in ("D", "H") and shape_suit in ("C", "S"):
-            return f"{label[:-1]}{shape_suit}", f"color {label[-1]}->{shape_suit}"
+    # Disabled for live captioning: the shape heuristic produced false
+    # C/S -> H corrections on real captures. Keep it out of the display path
+    # until it is validated offline against actual-labeled raw frames.
+    del oriented_warped
     return label, ""
 
 
